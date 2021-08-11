@@ -43,7 +43,7 @@ bootstrap.test <- function(data, times, nbs = 1000, nb = 10) {
   }
   b.fit <- ts.fit(data.demean, times = times, H = nb)
 
-  #pre compute
+  # pre compute
   # m_est <- b.fit$Bstar.tensor %*% (b.fit$BtB.inv %*% t(b.fit$B) )
 
   C.alt <- trunc.mat(b.fit, b.fit$R, times) # Smooth alt cov
