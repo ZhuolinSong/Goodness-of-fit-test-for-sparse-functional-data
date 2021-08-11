@@ -34,6 +34,6 @@ stephanie_type1 <- function(seed = 2021087, k, n, m, L = 1000) {
         sim.sigma2 <- c(sim.sigma2, fit.b$sigma2)
     }
     list(c(mean(sim.stats <= 0.05), mean(sim.stats <= 0.1)),
-        sum((sim.sigma2 - 1)^2),
+        mean((sim.sigma2 - 1)^2),
         l_time)
 }
