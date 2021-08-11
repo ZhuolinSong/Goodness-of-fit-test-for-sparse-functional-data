@@ -1,6 +1,4 @@
 source("simulation.R")
-
-
 RNGkind("L'Ecuyer-CMRG")
 
 seed <- 999983
