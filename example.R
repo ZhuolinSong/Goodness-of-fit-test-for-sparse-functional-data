@@ -41,11 +41,12 @@ source("direct.test.R")
 source("multivariate.test.R")
 
 # Example 1. Simulated data from null model, with 100 subjects and 80 obs/subj
-data <- gen.data(seed = 6, deviation = "trigonometric", nsubj = 100, r = 0, M = 80)
+data <- gen.data(deviation = "trigonometric", nsubj = 100, r = 0, M = 5)
 times <- seq(-1, 1, length.out = 80) # all possible time points
 
 # Implement the tests
 system.time(fit.b <- bootstrap.test(data, times, nbs = 10)) # pilot bootstrap test with 10 resamples
+fit.b$p
 
 # fit.b<-bootstrap.test(data,times,nbs=1000) # full bootstrap test with 1000 resamples
 fit.d <- direct.test(data, times) # direct test
