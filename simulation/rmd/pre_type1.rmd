@@ -1,0 +1,50 @@
+---
+Title: "Presentation: type_1 error"
+author: ""
+date: ""
+---
+
+```{r, include=F}
+library(parallel)
+load("stephanie_1004.RData")
+load("stephanie_1005.RData") # simulation/rmd/
+load("stephanie_1006.RData")
+load("stephanie_1007.RData")
+m_size <- matrix(NA, nrow = 4, ncol = 2)
+m_sigma2_mse <- matrix(NA, nrow = 4, ncol = 1)
+m_time <- matrix(NA, nrow = 4, ncol = 3)
+v_rownames <- c("stephanie_1004", "stephanie_1005",
+         "stephanie_1006", "stephanie_1007")
+rownames(m_size) <- v_rownames; rownames(m_sigma2_mse) <- v_rownames;
+rownames(m_time) <- v_rownames;
+```
+
+```{r, 1004}
+m_size[1, ] <- stephanie_1004[[1]]
+m_sigma2_mse[1, ] <- stephanie_1004[[2]]
+m_time[1, ] <- rowMeans(matrix(unlist(stephanie_1004[[3]]), nrow = 3))
+```
+
+```{r, 1005}
+m_size[2, ] <- stephanie_1005[[1]]
+m_sigma2_mse[2, ] <- stephanie_1005[[2]]
+m_time[2, ] <- rowMeans(matrix(unlist(stephanie_1005[[3]]), nrow = 3))
+```
+
+```{r, 1006}
+m_size[3, ] <- stephanie_1006[[1]]
+m_sigma2_mse[3, ] <- stephanie_1006[[2]]
+m_time[3, ] <- rowMeans(matrix(unlist(stephanie_1006[[3]]), nrow = 3))
+```
+
+```{r, 1007}
+m_size[4, ] <- stephanie_1007[[1]]
+m_sigma2_mse[4, ] <- stephanie_1007[[2]]
+m_time[4, ] <- rowMeans(matrix(unlist(stephanie_1007[[3]]), nrow = 3))
+```
+
+```{r, summary}
+m_size
+m_sigma2_mse
+m_time
+```
