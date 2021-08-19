@@ -41,12 +41,16 @@ source("direct.test.R")
 source("multivariate.test.R")
 
 # Example 1. Simulated data from null model, with 100 subjects and 80 obs/subj
-data <- gen.data(deviation = "trigonometric", nsubj = 100, r = 0, M = 5)
+data <- gen.data(deviation = "trigonometric", nsubj = 100, r = 0, M = 5, mixed_m = T)
 times <- seq(-1, 1, length.out = 80) # all possible time points
-
+m_cov_truth <- 1 + tcrossprod(times) - 0.5 * times - tcrossprod(rep(0.5, 80), times)
+set.seed(2021083)
 # Implement the tests
 system.time(fit.b <- bootstrap.test(data, times, nbs = 10)) # pilot bootstrap test with 10 resamples
+
 fit.b$p
+norm(fit.b$C.null - m_cov_truth, type = "F")
+norm(fit.b$C.alt - m_cov_truth, type = "F")
 
 # fit.b<-bootstrap.test(data,times,nbs=1000) # full bootstrap test with 1000 resamples
 fit.d <- direct.test(data, times) # direct test

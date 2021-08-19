@@ -22,7 +22,7 @@
 # bs.approx: List of values from the null distribution of Tn
 #######################
 
-bootstrap.test <- function(data, times, nbs = 1000, nb = 10) {
+bootstrap.test <- function(data, times, nbs = 1000, nb = 10, i_face = F) {
   source("calc.mean.R")
   source("select.knots.R")
   source("trunc.mat.R")
@@ -47,7 +47,12 @@ bootstrap.test <- function(data, times, nbs = 1000, nb = 10) {
   # m_est <- b.fit$Bstar.tensor %*% (b.fit$BtB.inv %*% t(b.fit$B) )
 
   C.alt <- trunc.mat(b.fit, b.fit$R, times) # Smooth alt cov
-  sigsq <- calc.sigsq(data.demean, C.alt, times) # error var
+  if (i_face) {
+    data.sigsq <- data.frame(y = data$.value - mu, argvals = data$.index, subj = data$.id)
+    sigsq <- (face.sparse(data.sigsq, center = TRUE))$sigma2
+  } else {
+    sigsq <- calc.sigsq(data.demean, C.alt, times) # error var
+  }
 
   Rbar0.fit <- calc.R0(fit.null, b.fit$Time)
   C.null <- trunc.mat(b.fit, Rbar0.fit$Rbar0, times) # Smooth null cov
