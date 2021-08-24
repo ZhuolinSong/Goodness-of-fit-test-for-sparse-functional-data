@@ -42,6 +42,9 @@ stephanie_type1 <- function(seed = 2021087, k, n, m, L = 1000, ...) {
         sim.calt <- c(sim.calt, norm(fit.b$C.alt - cov_truth, type = "F"))
     }
     list(c(mean(sim.stats <= 0.05), mean(sim.stats <= 0.1)),
-        mean((sim.sigma2 - 1)^2), mean(sim.c0), mean(sim.calt),
-        l_time)
+        mean((sim.sigma2 - 1)^2),
+        mean(sim.c0),
+        mean(sim.calt),
+        rowMeans(matrix(unlist(l_time), nrow = 3)),
+        c(seed, sim.success))
 }
