@@ -19,25 +19,25 @@ rownames(m_size) <- v_rownames; rownames(m_sigma2_mse) <- v_rownames;
 rownames(m_time) <- v_rownames;
 ```
 
-```{r, 1004}
+```{r, 1004, include=F}
 m_size[1, ] <- stephanie_1004[[1]]
 m_sigma2_mse[1, ] <- stephanie_1004[[2]]
 m_time[1, ] <- rowMeans(matrix(unlist(stephanie_1004[[3]]), nrow = 3))
 ```
 
-```{r, 1005}
+```{r, 1005, include=F}
 m_size[2, ] <- stephanie_1005[[1]]
 m_sigma2_mse[2, ] <- stephanie_1005[[2]]
 m_time[2, ] <- rowMeans(matrix(unlist(stephanie_1005[[3]]), nrow = 3))
 ```
 
-```{r, 1006}
+```{r, 1006, include=F}
 m_size[3, ] <- stephanie_1006[[1]]
 m_sigma2_mse[3, ] <- stephanie_1006[[2]]
 m_time[3, ] <- rowMeans(matrix(unlist(stephanie_1006[[3]]), nrow = 3))
 ```
 
-```{r, 1007}
+```{r, 1007, include=F}
 m_size[4, ] <- stephanie_1007[[1]]
 m_sigma2_mse[4, ] <- stephanie_1007[[2]]
 m_time[4, ] <- rowMeans(matrix(unlist(stephanie_1007[[3]]), nrow = 3))
@@ -46,5 +46,31 @@ m_time[4, ] <- rowMeans(matrix(unlist(stephanie_1007[[3]]), nrow = 3))
 ```{r, summary}
 m_size
 m_sigma2_mse
+m_time
+```
+
+```{r, include=F}
+load("steface_1004.RData")  # simulation/rmd/
+
+m_size <- matrix(NA, nrow = 2, ncol = 2)
+m_sigma2_mse <- matrix(NA, nrow = 2, ncol = 1)
+m_c0_mse <- matrix(NA, nrow = 2, ncol = 1)
+m_calt_mse <- matrix(NA, nrow = 2, ncol = 1)
+m_time <- matrix(NA, nrow = 2, ncol = 3)
+```
+
+```{r, steface_1004, include=F}
+m_size[1, ] <- steface_1004[[1]]
+m_sigma2_mse[1, ] <- steface_1004[[2]]
+m_c0_mse[1, ] <- steface_1004[[3]]
+m_calt_mse[1, ] <- steface_1004[[4]]
+m_time[1, ] <- rowMeans(matrix(unlist(steface_1004[[5]]), nrow = 3))
+```
+
+```{r, summary steface}
+m_size
+m_sigma2_mse
+m_c0_mse
+m_calt_mse
 m_time
 ```
