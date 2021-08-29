@@ -13,10 +13,13 @@ load("stephanie_1007.RData")
 m_size <- matrix(NA, nrow = 4, ncol = 2)
 m_sigma2_mse <- matrix(NA, nrow = 4, ncol = 1)
 m_time <- matrix(NA, nrow = 4, ncol = 3)
-v_rownames <- c("stephanie_1004", "stephanie_1005",
-         "stephanie_1006", "stephanie_1007")
-rownames(m_size) <- v_rownames; rownames(m_sigma2_mse) <- v_rownames;
-rownames(m_time) <- v_rownames;
+v_rownames <- c(
+    "stephanie_1004", "stephanie_1005",
+    "stephanie_1006", "stephanie_1007"
+)
+rownames(m_size) <- v_rownames
+rownames(m_sigma2_mse) <- v_rownames
+rownames(m_time) <- v_rownames
 ```
 
 ```{r, 1004, include=F}
@@ -43,15 +46,63 @@ m_sigma2_mse[4, ] <- stephanie_1007[[2]]
 m_time[4, ] <- rowMeans(matrix(unlist(stephanie_1007[[3]]), nrow = 3))
 ```
 
-```{r, summary}
+```{r, summary_100}
 m_size
 m_sigma2_mse
 m_time
 ```
 
 ```{r, include=F}
-load("steface_1004.RData")  # simulation/rmd/
+m_size <- matrix(0, nrow = 2, ncol = 2)
+m_sigma2_mse <- matrix(0, nrow = 2, ncol = 1)
+m_c0_mse <- matrix(0, nrow = 2, ncol = 1)
+m_calt_mse <- matrix(0, nrow = 2, ncol = 1)
+m_time <- matrix(0, nrow = 2, ncol = 3)
+```
+```{r, stephanie_5004.bs, eval = F, include = F}
+load("simulation/rmd/stephanie_5004_1.RData") # simulation/rmd/
+load("simulation/rmd/stephanie_5004_2.RData")
+load("simulation/rmd/stephanie_5004_3.RData")
+load("simulation/rmd/stephanie_5004_4.RData")
+load("simulation/rmd/stephanie_5004_5.RData")
+stephanie_5004_3[[1]][[5]] <- rowMeans(matrix(unlist(stephanie_5004_3[[1]][[5]]), nrow = 3))
+stephanie_5004_3[[2]][[5]] <- rowMeans(matrix(unlist(stephanie_5004_3[[2]][[5]]), nrow = 3))
+stephanie_5004 <- c(stephanie_5004_1, stephanie_5004_2, stephanie_5004_3, stephanie_5004_4, stephanie_5004_5)
+for (i in seq_along(stephanie_5004)) {
+    m_size[1, ] <- m_size[1, ] + stephanie_5004[[i]][[1]]
+    m_sigma2_mse[1, ] <- m_sigma2_mse[1, ] + stephanie_5004[[i]][[2]]
+    m_c0_mse[1, ] <- m_c0_mse[1, ] + stephanie_5004[[i]][[3]]
+    m_calt_mse[1, ] <- m_calt_mse[1, ] + stephanie_5004[[i]][[4]]
+    m_time[1, ] <- m_time[1, ] + stephanie_5004[[i]][[5]]
+}
 
+stephanie_5004 <- list(
+    m_size[1, ],
+    m_sigma2_mse[1, ],
+    m_c0_mse[1, ],
+    m_calt_mse[1, ],
+    m_time[1, ]
+)
+save(stephanie_5004, file = "stephanie_5004.RData")
+```
+
+```{r, stephanie_5004, include = F}
+load("stephanie_5004.RData")
+m_size[1, ] <- stephanie_5004[[1]] / 10
+m_sigma2_mse[1, ] <- stephanie_5004[[2]] / 10
+m_c0_mse[1, ] <- stephanie_5004[[3]] / 10
+m_calt_mse[1, ] <- stephanie_5004[[4]] / 10
+m_time[1, ] <- stephanie_5004[[5]] / 10
+```
+
+```{r, summary_500}
+m_size
+m_sigma2_mse
+m_c0_mse
+m_calt_mse
+m_time
+```
+```{r, include=F}
 m_size <- matrix(NA, nrow = 2, ncol = 2)
 m_sigma2_mse <- matrix(NA, nrow = 2, ncol = 1)
 m_c0_mse <- matrix(NA, nrow = 2, ncol = 1)
@@ -60,6 +111,7 @@ m_time <- matrix(NA, nrow = 2, ncol = 3)
 ```
 
 ```{r, steface_1004, include=F}
+load("steface_1004.RData") # simulation/rmd/
 m_size[1, ] <- steface_1004[[1]]
 m_sigma2_mse[1, ] <- steface_1004[[2]]
 m_c0_mse[1, ] <- steface_1004[[3]]
@@ -67,7 +119,103 @@ m_calt_mse[1, ] <- steface_1004[[4]]
 m_time[1, ] <- rowMeans(matrix(unlist(steface_1004[[5]]), nrow = 3))
 ```
 
-```{r, summary steface}
+```{r, steface_1007, include=F}
+load("steface_1007.RData") # simulation/rmd/
+m_size[2, ] <- (steface_1007[[1]][[1]] + steface_1007[[2]][[1]]) / 2
+m_sigma2_mse[2, ] <- (steface_1007[[1]][[2]] + steface_1007[[2]][[2]]) / 2
+m_c0_mse[2, ] <- (steface_1007[[1]][[3]] + steface_1007[[2]][[3]]) / 2
+m_calt_mse[2, ] <- (steface_1007[[1]][[4]] + steface_1007[[2]][[4]]) / 2
+m_time[2, ] <- (steface_1007[[1]][[5]] + steface_1007[[2]][[5]]) / 2
+```
+```{r, summary steface_100}
+m_size
+m_sigma2_mse
+m_c0_mse
+m_calt_mse
+m_time
+```
+
+
+
+```{r, include=F}
+m_size <- matrix(0, nrow = 2, ncol = 2)
+m_sigma2_mse <- matrix(0, nrow = 2, ncol = 1)
+m_c0_mse <- matrix(0, nrow = 2, ncol = 1)
+m_calt_mse <- matrix(0, nrow = 2, ncol = 1)
+m_time <- matrix(0, nrow = 2, ncol = 3)
+```
+
+```{r, steface_5004.bs, eval = F, include = F}
+load("simulation/rmd/steface_5004_1.RData") # simulation/rmd/
+load("simulation/rmd/steface_5004_2.RData")
+load("simulation/rmd/steface_5004_3.RData")
+load("simulation/rmd/steface_5004_4.RData")
+load("simulation/rmd/steface_5004_5.RData")
+steface_5004 <- c(steface_5004_1, steface_5004_2, steface_5004_3, steface_5004_4, steface_5004_5)
+for (i in seq_along(steface_5004)) {
+    m_size[1, ] <- m_size[1, ] + steface_5004[[i]][[1]]
+    m_sigma2_mse[1, ] <- m_sigma2_mse[1, ] + steface_5004[[i]][[2]]
+    m_c0_mse[1, ] <- m_c0_mse[1, ] + steface_5004[[i]][[3]]
+    m_calt_mse[1, ] <- m_calt_mse[1, ] + steface_5004[[i]][[4]]
+    m_time[1, ] <- m_time[1, ] + steface_5004[[i]][[5]]
+}
+seed.bs <- sapply(steface_5004, seed <- function(l_list) {
+    l_list[[6]]
+})
+steface_5004 <- list(
+    m_size[2, ],
+    m_sigma2_mse[2, ],
+    m_c0_mse[2, ],
+    m_calt_mse[2, ],
+    m_time[2, ],
+    seed.bs
+)
+save(steface_5004, file = "steface_5004.RData")
+```
+```{r, steface_5007.bs, eval = F, include = F}
+load("simulation/rmd/steface_5007_1.RData") # simulation/rmd/
+load("simulation/rmd/steface_5007_2.RData")
+load("simulation/rmd/steface_5007_3.RData")
+load("simulation/rmd/steface_5007_4.RData")
+load("simulation/rmd/steface_5007_5.RData")
+steface_5007 <- c(steface_5007_1, steface_5007_2, steface_5007_3, steface_5007_4, steface_5007_5)
+for (i in seq_along(steface_5007)) {
+    m_size[2, ] <- m_size[2, ] + steface_5007[[i]][[1]]
+    m_sigma2_mse[2, ] <- m_sigma2_mse[2, ] + steface_5007[[i]][[2]]
+    m_c0_mse[2, ] <- m_c0_mse[2, ] + steface_5007[[i]][[3]]
+    m_calt_mse[2, ] <- m_calt_mse[2, ] + steface_5007[[i]][[4]]
+    m_time[2, ] <- m_time[2, ] + steface_5007[[i]][[5]]
+}
+seed.bs <- sapply(steface_5007, seed <- function(l_list) {
+    l_list[[6]]
+})
+steface_5007 <- list(
+    m_size[2, ],
+    m_sigma2_mse[2, ],
+    m_c0_mse[2, ],
+    m_calt_mse[2, ],
+    m_time[2, ],
+    seed.bs
+)
+save(steface_5007, file = "steface_5007.RData")
+```
+```{r, steface_5004, include = F}
+load("steface_5004.RData")
+m_size[1, ] <- steface_5004[[1]] / 10
+m_sigma2_mse[1, ] <- steface_5004[[2]] / 10
+m_c0_mse[1, ] <- steface_5004[[3]] / 10
+m_calt_mse[1, ] <- steface_5004[[4]] / 10
+m_time[1, ] <- steface_5004[[5]] / 10
+```
+```{r, steface_5007, include = F}
+load("steface_5007.RData")
+m_size[2, ] <- steface_5007[[1]] / 10
+m_sigma2_mse[2, ] <- steface_5007[[2]] / 10
+m_c0_mse[2, ] <- steface_5007[[3]] / 10
+m_calt_mse[2, ] <- steface_5007[[4]] / 10
+m_time[2, ] <- steface_5007[[5]] / 10
+```
+```{r, summary steface_500}
 m_size
 m_sigma2_mse
 m_c0_mse

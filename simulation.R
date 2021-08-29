@@ -15,7 +15,7 @@ source("bootstrap.test.R")
 source("direct.test.R")
 source("multivariate.test.R")
 
-stephanie_type1 <- function(seed = 2021087, k, n, m, L = 1000, ...) {
+stephanie_type1 <- function(seed = 2021087, k, n, m, L = 1000, mixed = T, ...) {
     sim.success <- 0
     sim.stats <- c()
     sim.sigma2 <- c()
@@ -27,7 +27,7 @@ stephanie_type1 <- function(seed = 2021087, k, n, m, L = 1000, ...) {
 
     while (sim.success < k) {
         set.seed(seed + sim.success)
-        data <- gen.data(deviation = "trigonometric", nsubj = n, r = 0, M = m)
+        data <- gen.data(nsubj = n, r = 0, M = m, mixed_m = mixed)
         l_time[[sim.success + 1]] <- try(system.time(
             fit.b <- bootstrap.test(data, times, nbs = L, ...))[1:3],
             silent = T)
