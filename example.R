@@ -24,21 +24,8 @@
 # and p-value. See the individual function pages for details.
 #######################
 #setwd("/Applications/Books/research/GEE/test covariance/R code_Oct24/R code")
-# libraries
-library(nlme)
-library(MASS)
-library(refund)
-library(matrixcalc)
-library(mgcv)
-library(Matrix)
-library(Bolstad)
-library(splines)
 
-# functions
-source("gen.data.R")
-source("bootstrap.test.R")
-source("direct.test.R")
-source("multivariate.test.R")
+source("simulation.R")
 
 # Example 1. Simulated data from null model, with 100 subjects and 80 obs/subj
 data <- gen.data(deviation = "trigonometric", nsubj = 100, r = 0, M = 5, mixed_m = T)
@@ -46,17 +33,19 @@ times <- seq(-1, 1, length.out = 80) # all possible time points
 m_cov_truth <- 1 + tcrossprod(times) - 0.5 * times - tcrossprod(rep(0.5, 80), times)
 set.seed(2021083)
 # Implement the tests
-system.time(fit.b <- bootstrap.test(data, times, nbs = 10)) # pilot bootstrap test with 10 resamples
+system.time(fit.b <- bootstrap.test(data, times, nbs = 1)) # pilot bootstrap test with 10 resamples
 
 fit.b$p
 norm(fit.b$C.null - m_cov_truth, type = "F")
 norm(fit.b$C.alt - m_cov_truth, type = "F")
 
+
 # fit.b<-bootstrap.test(data,times,nbs=1000) # full bootstrap test with 1000 resamples
 fit.d <- direct.test(data, times) # direct test
 fit.m <- multivariate.test(data, times) # multivariate test (note: data must be dense, ie M=80)
 
-
+stephanie_type1(seed = 2021087, k = 5, n = 100, m = 5, L = 1,
+                mixed = T, i_face = T, face.mean = F)
 
 # Example 2. DTI data from "refund" package
 nsub.full <- 382
