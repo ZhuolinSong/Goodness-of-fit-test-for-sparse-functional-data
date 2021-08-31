@@ -46,5 +46,6 @@ stephanie_type1 <- function(seed = 2021087, k, n, m, L = 1000, mixed = T, ...) {
         mean(sim.c0),
         mean(sim.calt),
         rowMeans(matrix(unlist(l_time), nrow = 3)),
-        c(seed, sim.success))
+        c(seed, sim.success),
+        sim.stats)
 }
