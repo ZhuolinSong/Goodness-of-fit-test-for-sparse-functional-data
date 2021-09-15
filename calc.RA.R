@@ -4,24 +4,24 @@
 # Note: Could be sped up if m_i equal for all subjects
 # Updated: Aug 4, 2018
 
-calc.RA <- function(data){
+calc.RA <- function(data) {
   y <- data$.value
   t <- data$.index
   subj <- data$.id
   usubj <- unique(subj)
   n <- length(usubj)
   R <- c()
-  
-  for(i in 1:n){
-    index <- which(subj==usubj[i])
+
+  for (i in 1:n) {
+    index <- which(subj == usubj[i])
     mi <- length(index)
     ti <- t[index]
     yi <- y[index]
-    Ji <- matrix(1,mi,mi)
-    diag(Ji) <- 0
+    Ji <- matrix(1, mi, mi)
+    diag(Ji) <- 0 # dropped diagonal
     di <- c(Ji)
-    Ri <- (yi%x%yi)[which(di==1)]
-    R <- c(R,Ri)
+    Ri <- (yi %x% yi)[which(di == 1)] # covariance (drop diagonal) of subject i
+    R <- c(R, Ri)
   }
   return(c(R))
 }

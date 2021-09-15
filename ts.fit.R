@@ -40,11 +40,11 @@ ts.fit <- function(data, times, H = 10) {
     R <- c(R, Ri)
   }
 
-  t0 <- times ## fine grid
-  Bstar <- spline.des(knots = knots, x = t0, ord = 4, outer.ok = TRUE)$design
-  temp1 <- t(Bstar) %*% Bstar
-  Eigen1 <- eigen(temp1)
-  A1 <- Eigen1$vectors %*% sqrt(diag(Eigen1$values)) %*% t(Eigen1$vectors)
+  ## fine grid
+  Bstar <- spline.des(knots = knots, x = times, ord = p + 1, outer.ok = TRUE)$design
+  # temp1 <- t(Bstar) %*% Bstar
+  # Eigen1 <- eigen(temp1)
+  # A1 <- Eigen1$vectors %*% sqrt(diag(Eigen1$values)) %*% t(Eigen1$vectors)
   temp2 <- t(B) %*% B
   Eigen2 <- eigen(temp2)
   BtB.inv <- Eigen2$vectors %*% tcrossprod(diag(1 / Eigen2$values), Eigen2$vectors)

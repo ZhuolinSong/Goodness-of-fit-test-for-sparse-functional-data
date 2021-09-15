@@ -96,11 +96,11 @@ m_time <- matrix(0, nrow = 2, ncol = 3)
 ```{r, stephanie_5004r.bs, eval = F, include = F}
 load("simulation/rmd/stephanie_5004_1.RData") # simulation/rmd/
 load("simulation/rmd/stephanie_5004_2.RData")
-load("simulation/rmd/stephanie_5004_3.RData")
+load("simulation/rmd/stephanie_5004_3r.RData")
 load("simulation/rmd/stephanie_5004_4.RData")
 load("simulation/rmd/stephanie_5004_5.RData")
-stephanie_5004_3[[1]][[5]] <- rowMeans(matrix(unlist(stephanie_5004_3[[1]][[5]]), nrow = 3))
-stephanie_5004_3[[2]][[5]] <- rowMeans(matrix(unlist(stephanie_5004_3[[2]][[5]]), nrow = 3))
+
+load("simulation/rmd/stephanie_5004_3.RData")
 stephanie_5004 <- c(stephanie_5004_1, stephanie_5004_2, stephanie_5004_3, stephanie_5004_4, stephanie_5004_5)
 for (i in seq_along(stephanie_5004)) {
     m_size[1, ] <- m_size[1, ] + stephanie_5004[[i]][[1]]
@@ -120,6 +120,32 @@ stephanie_5004 <- list(
 save(stephanie_5004, file = "stephanie_5004.RData")
 ```
 
+```{r, stephanie_5007r.bs, eval = F, include = F}
+load("simulation/rmd/stephanie_5007_1r.RData") # simulation/rmd/
+load("simulation/rmd/stephanie_5007_2r.RData")
+load("simulation/rmd/stephanie_5007_3r.RData")
+load("simulation/rmd/stephanie_5007_4r.RData")
+load("simulation/rmd/stephanie_5007_5r.RData")
+stephanie_5007_3[[1]][[5]] <- rowMeans(matrix(unlist(stephanie_5007_3[[1]][[5]]), nrow = 3))
+stephanie_5007_3[[2]][[5]] <- rowMeans(matrix(unlist(stephanie_5007_3[[2]][[5]]), nrow = 3))
+stephanie_5007 <- c(stephanie_5007_1, stephanie_5007_2, stephanie_5007_3, stephanie_5007_4, stephanie_5007_5)
+for (i in seq_along(stephanie_5007)) {
+    m_size[1, ] <- m_size[1, ] + stephanie_5007[[i]][[1]]
+    m_sigma2_mse[1, ] <- m_sigma2_mse[1, ] + stephanie_5007[[i]][[2]]
+    m_c0_mse[1, ] <- m_c0_mse[1, ] + stephanie_5007[[i]][[3]]
+    m_calt_mse[1, ] <- m_calt_mse[1, ] + stephanie_5007[[i]][[4]]
+    m_time[1, ] <- m_time[1, ] + stephanie_5007[[i]][[5]]
+}
+
+stephanie_5007r <- list(
+    m_size[1, ],
+    m_sigma2_mse[1, ],
+    m_c0_mse[1, ],
+    m_calt_mse[1, ],
+    m_time[1, ]
+)
+save(stephanie_5007r, file = "stephanie_5007r.RData")
+```
 ```{r, stephanie_5004r, include = F}
 load("stephanie_5004.RData")
 m_size[1, ] <- stephanie_5004[[1]] / 10
@@ -129,6 +155,14 @@ m_calt_mse[1, ] <- stephanie_5004[[4]] / 10
 m_time[1, ] <- stephanie_5004[[5]] / 10
 ```
 
+```{r, stephanie_5007r, include = F}
+load("stephanie_5007r.RData")
+m_size[2, ] <- stephanie_5007r[[1]] / 10
+m_sigma2_mse[2, ] <- stephanie_5007r[[2]] / 10
+m_c0_mse[2, ] <- stephanie_5007r[[3]] / 10
+m_calt_mse[2, ] <- stephanie_5007r[[4]] / 10
+m_time[2, ] <- stephanie_5007r[[5]] / 10
+```
 ```{r, summary_500r}
 print("summary for 500 random")
 m_size
@@ -146,12 +180,12 @@ m_time <- matrix(NA, nrow = 2, ncol = 3)
 ```
 
 ```{r, steface_1004r, include=F}
-load("steface_1004.RData") # simulation/rmd/
-m_size[1, ] <- steface_1004[[1]]
-m_sigma2_mse[1, ] <- steface_1004[[2]]
-m_c0_mse[1, ] <- steface_1004[[3]]
-m_calt_mse[1, ] <- steface_1004[[4]]
-m_time[1, ] <- rowMeans(matrix(unlist(steface_1004[[5]]), nrow = 3))
+load("steface_1004rr.RData") # simulation/rmd/
+m_size[1, ] <- (steface_1004[[1]][[1]] + steface_1004[[2]][[1]]) / 2
+m_sigma2_mse[1, ] <- (steface_1004[[1]][[2]] + steface_1004[[2]][[2]]) / 2
+m_c0_mse[1, ] <- (steface_1004[[1]][[3]] + steface_1004[[2]][[3]]) / 2
+m_calt_mse[1, ] <- (steface_1004[[1]][[4]] + steface_1004[[2]][[4]]) / 2
+m_time[1, ] <- (steface_1004[[1]][[5]] + steface_1004[[2]][[5]]) / 2
 ```
 
 ```{r, steface_1007r, include=F}

@@ -76,3 +76,39 @@ fit.b <- bootstrap.test(data, times, nbs = 10) # pilot bootstrap test with 10 re
 # fit.b<-bootstrap.test(data,times,nbs=1000) # full bootstrap test with 1000 resamples
 fit.d <- direct.test(data, times) # direct test
 fit.m <- multivariate.test(data, times) # multivariate test (note: data must be dense)
+
+# CD4 count
+times <- round(seq(-1, 1, length.out = 61), digits = 5)
+# Clean data of subjects w/ missing obs and renumber subjs sequentially
+delete.subj <- NULL
+data <- NULL # final dataset
+value <- NULL; id <- NULL; index <- NULL; count <- NULL
+new.subj <- 1
+
+for (i in seq_len(nrow(cd4))) {
+  subj.idx <- which(!is.na(cd4[i, ]))
+  subj.value <- cd4[i, subj.idx]
+  subj.index <- times[subj.idx]
+  subj.count <- length(subj.idx)
+  if (subj.count < 1) {
+    delete.subj <- c(delete.subj, i)
+  }
+  else {
+    id <- c(id, rep(new.subj, subj.count))
+    value <- c(value, subj.value)
+    index <- c(index, subj.index)
+    count <- c(count, subj.count)
+    new.subj <- new.subj + 1
+  }
+}
+mean(count)
+min(count)
+max(count)
+
+# No log-transform stepface
+data <- data.frame(.value = value, .index = index, .id = id)
+fit.b1 <- bootstrap.test(data, times, i_face = T) # pilot bootstrap test with 10 resamples
+
+# Log-transform stepface
+data <- data.frame(.value = log(value), .index = index, .id = id)
+fit.b2 <- bootstrap.test(data, times, i_face = T) # pilot bootstrap test with 10 resamples
