@@ -25,7 +25,7 @@ ts.fit <- function(data, times, H = 10) {
     ti <- t[index]
     yi <- y[index]
 
-    Bi <- spline.des(knots = knots, x = ti, ord = p + 1, outer.ok = TRUE)$design
+    Bi <- spline.des(knots = knots, x = ti, ord = p + 1, outer.ok = TRUE, sparse = TRUE)$design
     Btildei <- Bi %x% Bi
     Ji <- matrix(1, mi, mi)
     diag(Ji) <- 0
@@ -41,13 +41,34 @@ ts.fit <- function(data, times, H = 10) {
   }
 
   ## fine grid
-  Bstar <- spline.des(knots = knots, x = times, ord = p + 1, outer.ok = TRUE)$design
+  # B^*
+  # st.construct <- function(tnew) {
+  #   m1 <- length(tnew)
+  #   if (m1 > 1) {
+  #     st <- cbind(vech(kronecker(tnew, t(rep(1, m1)))),
+  #                 vech(kronecker(rep(1, m1), t(tnew))))
+  #   } else if (m1 == 1) {
+  #     st <- rbind(st, c(tnew, tnew))
+  #   }
+  #   st
+  # }
+  # stnew <- st.construct(times)
+  # Bnew1 <- spline.des(knots = knots, x = stnew[, 1], ord = p + 1, outer.ok = TRUE, sparse = TRUE)$design
+  # Bnew2 <- spline.des(knots = knots, x = stnew[, 2], ord = p + 1, outer.ok = TRUE, sparse = TRUE)$design
+  # Xstar <- Matrix(t(KhatriRao(Matrix(t(Bnew2)), Matrix(t(Bnew1)))))
+  # delta_star <- which(stnew[, 1] != stnew[, 2])
+  # Xstar[delta_star, ] <- sqrt(2) * Xstar[delta_star, ]
+
+  Bstar <- spline.des(knots = knots, x = times, ord = p + 1, outer.ok = TRUE, sparse = TRUE)$design
   # temp1 <- t(Bstar) %*% Bstar
   # Eigen1 <- eigen(temp1)
   # A1 <- Eigen1$vectors %*% sqrt(diag(Eigen1$values)) %*% t(Eigen1$vectors)
-  temp2 <- t(B) %*% B
-  Eigen2 <- eigen(temp2)
-  BtB.inv <- Eigen2$vectors %*% tcrossprod(diag(1 / Eigen2$values), Eigen2$vectors)
-
-  return(list(B = B, Bstar = Bstar, Time = Time, R = R, BtB.inv = BtB.inv, Bstar.tensor = Bstar %x% Bstar))
+  temp2 <- crossprod(B)
+  Eigen2 <- eigen(temp2, symmetric = T)
+  BtB.inv <- Matrix(Eigen2$vectors %*% tcrossprod(diag(1 / Eigen2$values), Eigen2$vectors))
+  B.est <- tcrossprod(BtB.inv, B)
+  return(list(B = B, Bstar = Bstar,
+            # Xstar = Xstar,Bstar.tensor = Bstar %x% Bstar,
+            Time = Time, R = Matrix(R),
+            BtB.inv = BtB.inv, B.est = B.est))
 }

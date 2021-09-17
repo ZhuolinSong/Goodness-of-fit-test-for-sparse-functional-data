@@ -6,7 +6,6 @@
 
 calc.RA <- function(data) {
   y <- data$.value
-  t <- data$.index
   subj <- data$.id
   usubj <- unique(subj)
   n <- length(usubj)
@@ -15,7 +14,6 @@ calc.RA <- function(data) {
   for (i in 1:n) {
     index <- which(subj == usubj[i])
     mi <- length(index)
-    ti <- t[index]
     yi <- y[index]
     Ji <- matrix(1, mi, mi)
     diag(Ji) <- 0 # dropped diagonal
@@ -23,5 +21,5 @@ calc.RA <- function(data) {
     Ri <- (yi %x% yi)[which(di == 1)] # covariance (drop diagonal) of subject i
     R <- c(R, Ri)
   }
-  return(c(R))
+  return(Matrix(R))
 }

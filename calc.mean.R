@@ -3,9 +3,7 @@
 # Purpose: Calculates smooth mean using 10 thin plate regression splines
 # Updated: Aug 4, 2018
 
-calc.mean<-function(data){ #smooth mean
-  gam0<-gam(as.vector(data$.value)~s(data$.index,k=10))
+calc.mean <- function(data) { # smooth mean
+  gam0 <- gam(as.vector(data$.value) ~ s(data$.index, k = 10))
   return(gam0$fitted.values)
 }
-
-

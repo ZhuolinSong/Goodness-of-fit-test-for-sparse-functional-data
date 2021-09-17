@@ -10,5 +10,5 @@ calc.R0 <- function(fit.null, times) {
   sigsq1 <- as.numeric(var.mat[2, 1])
   cov01 <- as.numeric(var.mat[2, 3]) * sqrt(sigsq0 * sigsq1) # corr->cov
   Rbar0 <- sigsq0 + cov01 * (times[, 1] + times[, 2]) + sigsq1 * (times[, 1] * times[, 2])
-  list(Rbar0 = Rbar0, coef.null = c(sigsq0, cov01, sigsq1))
+  list(Rbar0 = Matrix(Rbar0), coef.null = c(sigsq0, cov01, sigsq1))
 }

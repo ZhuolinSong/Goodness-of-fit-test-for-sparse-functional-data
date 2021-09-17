@@ -27,25 +27,33 @@
 
 source("simulation.R")
 
+stephanie_type1(seed = 2021087, k = 1, n = 100, m = 7, L = 1000,
+              mixed = T, i_face = T, center = T, lambda = 0)
+
 # Example 1. Simulated data from null model, with 100 subjects and 80 obs/subj
-data <- gen.data(deviation = "trigonometric", nsubj = 100, r = 0, M = 5, mixed_m = T)
+RNGkind("L'Ecuyer-CMRG", sample.kind = "Rej")
+set.seed(2021085)
+data <- gen.data(deviation = "trigonometric", nsubj = 100, r = 0, M = 7, mixed_m = T)
+
 times <- seq(-1, 1, length.out = 80) # all possible time points
 m_cov_truth <- 1 + tcrossprod(times) - 0.5 * times - tcrossprod(rep(0.5, 80), times)
-set.seed(2021083)
 # Implement the tests
-system.time(fit.b <- bootstrap.test(data, times, nbs = 1)) # pilot bootstrap test with 10 resamples
+set.seed(2021085)
+system.time(fit.b <- bootstrap.test(data, times, nbs = 100, bs.mean = T,
+            i_face = T, center = T, lambda = 0))
 
 fit.b$p
+fit.b$Tn
+fit.b$bs.approx
 norm(fit.b$C.null - m_cov_truth, type = "F")
 norm(fit.b$C.alt - m_cov_truth, type = "F")
-
+(fit.b$sigma2 - 1)^2
 
 # fit.b<-bootstrap.test(data,times,nbs=1000) # full bootstrap test with 1000 resamples
 fit.d <- direct.test(data, times) # direct test
 fit.m <- multivariate.test(data, times) # multivariate test (note: data must be dense, ie M=80)
 
-stephanie_type1(seed = 2021087, k = 5, n = 100, m = 5, L = 1,
-                mixed = T, i_face = T, face.mean = F)
+
 
 # Example 2. DTI data from "refund" package
 nsub.full <- 382
