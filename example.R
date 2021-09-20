@@ -117,6 +117,8 @@ max(count)
 data <- data.frame(.value = value, .index = index, .id = id)
 fit.b1 <- bootstrap.test(data, times, i_face = T) # pilot bootstrap test with 10 resamples
 
+fit.b1$p
 # Log-transform stepface
 data <- data.frame(.value = log(value), .index = index, .id = id)
 fit.b2 <- bootstrap.test(data, times, i_face = T) # pilot bootstrap test with 10 resamples
+fit.b2$p
