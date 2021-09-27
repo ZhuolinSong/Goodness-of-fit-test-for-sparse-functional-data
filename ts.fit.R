@@ -3,7 +3,7 @@
 # Purpose: Tensor-spline fit (using cubic B-splines) to data for smooth null and alternative covariance
 # Updated: Aug 4, 2018
 
-ts.fit <- function(data, times, H = 10) {
+ts.fit <- function(data, times, H = 10, include.diag = F) {
   p <- 3 ## cubic splines: degrees
   knots <- select.knots(seq(-1, 1, by = 0.01), H - p)
   # knots <- select.knots(seq(0,1,by=0.01),H-p)
@@ -14,9 +14,7 @@ ts.fit <- function(data, times, H = 10) {
   usubj <- unique(subj)
   n <- length(usubj)
 
-  B <- matrix(, nrow = 0, ncol = H^2)
   Time <- matrix(, nrow = 0, ncol = 2)
-  Y <- c()
   R <- c()
 
   for (i in 1:n) {
@@ -25,50 +23,39 @@ ts.fit <- function(data, times, H = 10) {
     ti <- t[index]
     yi <- y[index]
 
-    Bi <- spline.des(knots = knots, x = ti, ord = p + 1, outer.ok = TRUE, sparse = TRUE)$design
-    Btildei <- Bi %x% Bi
-    Ji <- matrix(1, mi, mi)
-    diag(Ji) <- 0
-    di <- c(Ji)
-    Bbari <- Btildei[which(di == 1), ]
-    T1i <- (ti %x% rep(1, mi))[which(di == 1)]
-    T2i <- (rep(1, mi) %x% ti)[which(di == 1)]
-    Ri <- (yi %x% yi)[which(di == 1)]
+    if (mi > 1) {
+      # <------ select off diagonal only
+      sel <- setdiff(1:(mi * (mi + 1) / 2), c(1, 1 + cumsum(mi:1)[1:(mi - 1)]))
+      if (include.diag) {
+        sel <- 1:(mi * (mi + 1) / 2)
+      }
 
-    B <- rbind(B, Bbari)
-    Time <- rbind(Time, cbind(T1i, T2i))
-    R <- c(R, Ri)
+      T1i <- vech(ti %x% t(rep(1, mi)))
+      T2i <- vech(rep(1, mi) %x% t(ti))
+      Ri <- vech(tcrossprod(yi))
+
+      Time <- rbind(Time, cbind(T1i, T2i)[sel, ])
+      R <- c(R, Ri[sel])
+    }
   }
 
-  ## fine grid
-  # B^*
-  # st.construct <- function(tnew) {
-  #   m1 <- length(tnew)
-  #   if (m1 > 1) {
-  #     st <- cbind(vech(kronecker(tnew, t(rep(1, m1)))),
-  #                 vech(kronecker(rep(1, m1), t(tnew))))
-  #   } else if (m1 == 1) {
-  #     st <- rbind(st, c(tnew, tnew))
-  #   }
-  #   st
-  # }
-  # stnew <- st.construct(times)
-  # Bnew1 <- spline.des(knots = knots, x = stnew[, 1], ord = p + 1, outer.ok = TRUE, sparse = TRUE)$design
-  # Bnew2 <- spline.des(knots = knots, x = stnew[, 2], ord = p + 1, outer.ok = TRUE, sparse = TRUE)$design
-  # Xstar <- Matrix(t(KhatriRao(Matrix(t(Bnew2)), Matrix(t(Bnew1)))))
-  # delta_star <- which(stnew[, 1] != stnew[, 2])
-  # Xstar[delta_star, ] <- sqrt(2) * Xstar[delta_star, ]
+  B1 <- spline.des(knots = knots, x = Time[, 1], ord = p + 1, outer.ok = TRUE, sparse = TRUE)$design
+  B2 <- spline.des(knots = knots, x = Time[, 2], ord = p + 1, outer.ok = TRUE, sparse = TRUE)$design
+  B <- Matrix(t(KhatriRao(Matrix(t(B2)), Matrix(t(B1)))))
+
+  c <- dim(B1)[2]
+  G <- Matrix(duplication.matrix(c))
+  BG <- B %*% G
 
   Bstar <- spline.des(knots = knots, x = times, ord = p + 1, outer.ok = TRUE, sparse = TRUE)$design
   # temp1 <- t(Bstar) %*% Bstar
   # Eigen1 <- eigen(temp1)
   # A1 <- Eigen1$vectors %*% sqrt(diag(Eigen1$values)) %*% t(Eigen1$vectors)
-  temp2 <- crossprod(B)
+  temp2 <- crossprod(BG)
   Eigen2 <- eigen(temp2, symmetric = T)
   BtB.inv <- Matrix(Eigen2$vectors %*% tcrossprod(diag(1 / Eigen2$values), Eigen2$vectors))
-  B.est <- tcrossprod(BtB.inv, B)
-  return(list(B = B, Bstar = Bstar,
-            # Xstar = Xstar,Bstar.tensor = Bstar %x% Bstar,
-            Time = Time, R = Matrix(R),
+  B.est <- tcrossprod(BtB.inv, BG)
+  return(list(B = B, Bstar = Bstar, Xstar = crossprod(Bstar),
+            G = G, Time = Time, R = R,
             BtB.inv = BtB.inv, B.est = B.est))
 }

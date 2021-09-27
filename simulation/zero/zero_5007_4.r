@@ -8,8 +8,8 @@ s_n <- 500
 s_m <- 7
 v_seed <- c(s_seed, s_seed + s_k)
 
-steface_5007_4 <- mclapply(v_seed, seed_loop <- function(seed) {
+zero_5007_4 <- mclapply(v_seed, seed_loop <- function(seed) {
     stephanie_type1(seed, s_k / 2, s_n, s_m, L = 1000, i_face = T, lambda = 0)
 }, mc.cores = 2)
 
-save(steface_5007_4, file = "steface_5007_4.RData")
+save(zero_5007_4, file = "zero_5007_4.RData")

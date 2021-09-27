@@ -4,17 +4,36 @@
 #          positive-semi definite
 # Updated: Aug 4, 2018
 
-trunc.mat <- function(b.fit, R, nb, trunc = F) {
+trunc.mat <- function(b.fit, R0, Ra, nb, fast.tn = F) {
 #ptm <- proc.time()
-  Theta <- matrix(b.fit$B.est %*% R, nrow = nb)
-  Theta <- 0.5 * (Theta + t(Theta))
-  if (trunc) {
-    eigen.fit <- eigen(Theta)
-    efuncs <- eigen.fit$vectors
-    evals <- as.numeric(eigen.fit$values)
-    evals[evals < 1e-5] <- 0
-    Theta <- efuncs %*% tcrossprod(diag(evals), efuncs)
+
+  if (fast.tn) {
+    alpha <- b.fit$B.est %*% (R0 - Ra)
+    Delta <- matrix(b.fit$G %*% alpha, nrow = nb)
+  } else {
+    Theta0 <- trunc.mat.theta(b.fit, R0, nb, fast.tn = F)
+    Thetaa <- trunc.mat.theta(b.fit, Ra, nb, fast.tn = F)
+    Delta <- Theta0 - Thetaa
   }
-  as.matrix(tcrossprod(b.fit$Bstar %*% Matrix(Theta), b.fit$Bstar))
+
+  return(Delta)
 #print(proc.time() - ptm)
+}
+
+trunc.mat.theta <- function(b.fit, R, nb, fast.tn = F) {
+  alpha <- b.fit$B.est %*% R
+  Theta <- matrix(b.fit$G %*% alpha, nrow = nb)
+  if (!fast.tn) {
+    Theta <- trunc.mat.inner(Theta)
+  }
+  return(Theta)
+}
+
+trunc.mat.inner <- function(Theta) {
+  eigen.fit <- eigen(Theta, symmetric = T)
+  efuncs <- eigen.fit$vectors
+  evals <- as.numeric(eigen.fit$values)
+  evals[evals < 1e-5] <- 0
+
+  return(matrix.multiply(efuncs, evals) %*% t(efuncs))
 }

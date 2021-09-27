@@ -1,4 +1,5 @@
 library(nlme)
+library(stats)
 library(MASS)
 library(refund)
 library(matrixcalc)

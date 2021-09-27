@@ -4,7 +4,7 @@
 # Note: Could be sped up if m_i equal for all subjects
 # Updated: Aug 4, 2018
 
-calc.RA <- function(data) {
+calc.RA <- function(data, include.diag = F) {
   y <- data$.value
   subj <- data$.id
   usubj <- unique(subj)
@@ -15,11 +15,16 @@ calc.RA <- function(data) {
     index <- which(subj == usubj[i])
     mi <- length(index)
     yi <- y[index]
-    Ji <- matrix(1, mi, mi)
-    diag(Ji) <- 0 # dropped diagonal
-    di <- c(Ji)
-    Ri <- (yi %x% yi)[which(di == 1)] # covariance (drop diagonal) of subject i
-    R <- c(R, Ri)
+
+    if (mi > 1) {
+      # <------ select off diagonal only
+      sel <- setdiff(1:(mi * (mi + 1) / 2), c(1, 1 + cumsum(mi:1)[1:(mi - 1)]))
+      if (include.diag) {
+        sel <- 1:(mi * (mi + 1) / 2)
+      }
+      Ri <- vech(tcrossprod(yi))
+      R <- c(R, Ri[sel])
+    }
   }
-  return(Matrix(R))
+  return(R)
 }

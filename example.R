@@ -27,8 +27,8 @@
 
 source("simulation.R")
 
-stephanie_type1(seed = 2021087, k = 1, n = 100, m = 7, L = 1000,
-              mixed = T, i_face = T, center = T, lambda = 0)
+stephanie_type1(seed = 2021087, k = 1, n = 100, m = 7, L = 100,
+              mixed = T, i_face = F, center = T)
 
 # Example 1. Simulated data from null model, with 100 subjects and 80 obs/subj
 RNGkind("L'Ecuyer-CMRG", sample.kind = "Rej")
@@ -39,9 +39,9 @@ times <- seq(-1, 1, length.out = 80) # all possible time points
 m_cov_truth <- 1 + tcrossprod(times) - 0.5 * times - tcrossprod(rep(0.5, 80), times)
 # Implement the tests
 set.seed(2021085)
-system.time(fit.b <- bootstrap.test(data, times, nbs = 100, bs.mean = T,
-            i_face = T, center = T, lambda = 0))
-
+system.time(fit.b <- bootstrap.test(data, times, nbs = 1000,
+bs.mean = T, i_face = T, fast.tn = F, center = T))
+ 
 fit.b$p
 fit.b$Tn
 fit.b$bs.approx

@@ -23,7 +23,7 @@
 #######################
 
 bootstrap.test <- function(data, times, nbs = 1000, nb = 10,
-                           i_face = F, bs.mean = T, ...) {
+                           i_face = T, bs.mean = T, fast.tn = F, ...) {
   source("calc.mean.R")
   source("select.knots.R")
   source("trunc.mat.R")
@@ -35,6 +35,7 @@ bootstrap.test <- function(data, times, nbs = 1000, nb = 10,
   source("irreg2mat.mod.R")
   source("resample.R")
   source("p.bs.R")
+  source("matrix.multiply.r")
 
   mu <- calc.mean(data)
   data.demean <- data.frame(.value = data$.value - mu, .index = data$.index, .id = data$.id)
@@ -43,56 +44,68 @@ bootstrap.test <- function(data, times, nbs = 1000, nb = 10,
     stop(fit.null)
   }
   b.fit <- ts.fit(data.demean, times = times, H = nb)
-  # b.smooth <- b.fit$Bstar.tensor %*% tcrossprod(b.fit$BtB.inv, b.fit$B)
   Rbar0.fit <- calc.R0(fit.null, b.fit$Time)
 
-  C.alt <- trunc.mat(b.fit, b.fit$R, nb) # Smooth alt cov
-  C.null <- trunc.mat(b.fit, Rbar0.fit$Rbar0, nb) # Smooth null cov
-  Tn <- norm(C.alt - C.null, type = "F")
 
+  Theta.null <- trunc.mat.theta(b.fit, Rbar0.fit$Rbar0, nb, fast.tn) # Smooth null cov
+  Theta.alt <- trunc.mat.theta(b.fit, b.fit$R, nb, fast.tn) # Smooth alt cov
+  DX <- (Theta.null - Theta.alt) %*% b.fit$Xstar
+  Tn <- sqrt(sum(DX * t(DX)))
+  #print(Tn)
+  C.alt <- as.matrix(tcrossprod(b.fit$Bstar %*% Matrix(Theta.alt), b.fit$Bstar))
+  C.null <- as.matrix(tcrossprod(b.fit$Bstar %*% Matrix(Theta.null), b.fit$Bstar))
+  #print(norm(C.alt - C.null, type = "F"))
+  #DX <- trunc.mat(b.fit, Rbar0.fit$Rbar0, b.fit$R, nb, fast.tn) %*% b.fit$Xstar
+  #print(sqrt(sum(DX * t(DX))))
+  # calculate sigma^2
   if (i_face) {
     data.sigsq <- data.frame(y = data$.value - mu, argvals = data$.index, subj = data$.id)
     sigsq <- (face.sparse(data.sigsq, ...))$sigma2 # false ?? or we need leave-one-subject-out mean nr??
-    # sigsq <- 1
   } else {
     sigsq <- calc.sigsq(data.demean, C.alt, times) # error var
   }
   # bootstrap
   bs.stats <- c()
   bs.success <- 0
+  if (bs.mean) {
+      mean.bs <- mu
+  } else {
+      mean.bs <- 0
+  }
+  data.demean.bs <- data
 
   while (bs.success < nbs) { # 0.07 per iteration
+#ptm <- proc.time()
+    ###### a. generate Y_ij^(l) (0.02s)
+    y <- c(resample(data, mean.bs, Rbar0.fit$coef.null, sigsq))
 
+    ###### b. center Y_ij^(l) (0.01s)
+    r <- y
     if (bs.mean) {
-      ###### a. generate Y_ij^(l) (0.02s)
-      y <- c(resample(data, mu, Rbar0.fit$coef.null, sigsq))
-      this.bs <- resample(data, mu, Rbar0.fit$coef.null, sigsq)
-      mu.bs <- mgcv::gam(as.vector(y) ~ s(data$.index, k = nb))$fitted.values
-      data.demean.bs <- data.frame(.value = y - mu.bs, .index = data$.index, .id = data$.id)
-    } else {
-      y <- c(resample(data, 0, Rbar0.fit$coef.null, sigsq))
-      data.demean.bs <- data.frame(.value = y, .index = data$.index, .id = data$.id)
+      fit_mean.bs <- mgcv::gam(as.vector(y) ~ s(data$.index, k = nb))
+      r <- y - fit_mean.bs$fitted.values
     }
+    data.demean.bs$.value <- as.vector(r)
+
 
     ###### b. fitnull (0.03s)
     fit.null.bs <- fitNull(data.demean.bs) # null fit (slow here I think)
     if ("try-error" %in% class(fit.null.bs)) { # issue with null fit
       next # if problem
     }
+    Rbar0 <- calc.R0(fit.null.bs, b.fit$Time)$Rbar0
 
-    ###### c. calculate Tn.bs (0.02s)
+    ###### c. Initialize R^(a) (0.00s)
     RbarA <- calc.RA(data.demean.bs) # R for alt
-    Rbar0.fit.bs <- calc.R0(fit.null.bs, b.fit$Time)
-#ptm <- proc.time()
-    # C0.bs <- cbind(C0.bs, Rbar0.fit.bs$Rbar0)
-    # C.bs <- cbind(C.bs, calc.RA(data.demean.bs))
-    C.alt.bs <- trunc.mat(b.fit, RbarA, nb) # slow here
-    C.null.bs <- trunc.mat(b.fit, Rbar0.fit.bs$Rbar0, nb) # slow here
-#print(proc.time() - ptm)
-    Tn.bs <- norm(C.alt.bs - C.null.bs, type = "F")
+
+    ###### d. calculate Tn.bs (0.0s)
+    Delta.bs <- trunc.mat(b.fit, Rbar0, RbarA, nb, fast.tn) # slow here
+
+    DX.bs <- Delta.bs %*% b.fit$Xstar
+    Tn.bs <- sqrt(sum(DX.bs * t(DX.bs)))
     bs.stats <- c(bs.stats, Tn.bs) # save bs stats
     bs.success <- bs.success + 1
-
+#print(proc.time() - ptm)
   }
 
   Tn.stats <- p.bs(Tn, unlist(bs.stats))
