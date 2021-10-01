@@ -23,7 +23,7 @@
 #######################
 
 bootstrap.test <- function(data, times, nbs = 1000, nb = 10,
-                           i_face = T, bs.mean = T, fast.tn = F, ...) {
+                           i_face = T, bs.mean = T, truncate.tn = 2, ...) {
   source("calc.mean.R")
   source("select.knots.R")
   source("trunc.mat.R")
@@ -47,15 +47,15 @@ bootstrap.test <- function(data, times, nbs = 1000, nb = 10,
   Rbar0.fit <- calc.R0(fit.null, b.fit$Time)
 
 
-  Theta.null <- trunc.mat.theta(b.fit, Rbar0.fit$Rbar0, nb, fast.tn) # Smooth null cov
-  Theta.alt <- trunc.mat.theta(b.fit, b.fit$R, nb, fast.tn) # Smooth alt cov
+  Theta.null <- trunc.mat.theta(b.fit, Rbar0.fit$Rbar0, nb, truncate.tn) # Smooth null cov
+  Theta.alt <- trunc.mat.theta(b.fit, b.fit$R, nb, truncate.tn) # Smooth alt cov
   DX <- (Theta.null - Theta.alt) %*% b.fit$Xstar
   Tn <- sqrt(sum(DX * t(DX)))
   #print(Tn)
   C.alt <- as.matrix(tcrossprod(b.fit$Bstar %*% Matrix(Theta.alt), b.fit$Bstar))
   C.null <- as.matrix(tcrossprod(b.fit$Bstar %*% Matrix(Theta.null), b.fit$Bstar))
   #print(norm(C.alt - C.null, type = "F"))
-  #DX <- trunc.mat(b.fit, Rbar0.fit$Rbar0, b.fit$R, nb, fast.tn) %*% b.fit$Xstar
+  #DX <- trunc.mat(b.fit, Rbar0.fit$Rbar0, b.fit$R, nb, truncate.tn) %*% b.fit$Xstar
   #print(sqrt(sum(DX * t(DX))))
   # calculate sigma^2
   if (i_face) {
@@ -99,7 +99,7 @@ bootstrap.test <- function(data, times, nbs = 1000, nb = 10,
     RbarA <- calc.RA(data.demean.bs) # R for alt
 
     ###### d. calculate Tn.bs (0.0s)
-    Delta.bs <- trunc.mat(b.fit, Rbar0, RbarA, nb, fast.tn) # slow here
+    Delta.bs <- trunc.mat(b.fit, Rbar0, RbarA, nb, truncate.tn) # slow here
 
     DX.bs <- Delta.bs %*% b.fit$Xstar
     Tn.bs <- sqrt(sum(DX.bs * t(DX.bs)))

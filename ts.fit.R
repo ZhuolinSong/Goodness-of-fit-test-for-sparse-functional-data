@@ -3,7 +3,7 @@
 # Purpose: Tensor-spline fit (using cubic B-splines) to data for smooth null and alternative covariance
 # Updated: Aug 4, 2018
 
-ts.fit <- function(data, times, H = 10, include.diag = F) {
+ts.fit <- function(data, times, H = 10, include.diag = F, m = 8e5) {
   p <- 3 ## cubic splines: degrees
   knots <- select.knots(seq(-1, 1, by = 0.01), H - p)
   # knots <- select.knots(seq(0,1,by=0.01),H-p)
@@ -55,7 +55,14 @@ ts.fit <- function(data, times, H = 10, include.diag = F) {
   Eigen2 <- eigen(temp2, symmetric = T)
   BtB.inv <- Matrix(Eigen2$vectors %*% tcrossprod(diag(1 / Eigen2$values), Eigen2$vectors))
   B.est <- tcrossprod(BtB.inv, BG)
-  return(list(B = B, Bstar = Bstar, Xstar = crossprod(Bstar),
+  dense_times <- seq(min(times), max(times), length.out = m)
+  Xstar <- spline.des(knots = knots, x = dense_times, ord = p + 1, outer.ok = TRUE, sparse = TRUE)$design
+  Xstar <- crossprod(Xstar) / m
+  Eigen1 <- eigen(Xstar)
+  Xstar.half <- Eigen1$vectors %*% diag(sqrt(Eigen1$values)) %*% t(Eigen1$vectors)
+  Xstar.invhalf <- Eigen1$vectors %*% diag(1 / sqrt(Eigen1$values)) %*% t(Eigen1$vectors)
+  return(list(B = B, Bstar = Bstar,
+            Xstar = Xstar, Xstar.half = Xstar.half, Xstar.invhalf = Xstar.invhalf,
             G = G, Time = Time, R = R,
             BtB.inv = BtB.inv, B.est = B.est))
 }

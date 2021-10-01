@@ -233,11 +233,11 @@ seed.bs <- sapply(steface_5004, seed <- function(l_list) {
     l_list[[6]]
 })
 steface_5004 <- list(
-    m_size[2, ],
-    m_sigma2_mse[2, ],
-    m_c0_mse[2, ],
-    m_calt_mse[2, ],
-    m_time[2, ],
+    m_size[1, ],
+    m_sigma2_mse[1, ],
+    m_c0_mse[1, ],
+    m_calt_mse[1, ],
+    m_time[1, ],
     seed.bs
 )
 save(steface_5004, file = "steface_5004.RData")
@@ -346,12 +346,12 @@ m_time[1, ] <- (steface_1004[[1]][[5]] + steface_1004[[2]][[5]]) / 2
 ```
 
 ```{r, steface_1007n, include=F}
-# load("steface_1007.RData") # simulation/rmd/
-# m_size[2, ] <- (steface_1007[[1]][[1]] + steface_1007[[2]][[1]]) / 2
-# m_sigma2_mse[2, ] <- (steface_1007[[1]][[2]] + steface_1007[[2]][[2]]) / 2
-# m_c0_mse[2, ] <- (steface_1007[[1]][[3]] + steface_1007[[2]][[3]]) / 2
-# m_calt_mse[2, ] <- (steface_1007[[1]][[4]] + steface_1007[[2]][[4]]) / 2
-# m_time[2, ] <- (steface_1007[[1]][[5]] + steface_1007[[2]][[5]]) / 2
+load("steface_1007n.RData") # simulation/rmd/
+m_size[2, ] <- (steface_1007[[1]][[1]] + steface_1007[[2]][[1]]) / 2
+m_sigma2_mse[2, ] <- (steface_1007[[1]][[2]] + steface_1007[[2]][[2]]) / 2
+m_c0_mse[2, ] <- (steface_1007[[1]][[3]] + steface_1007[[2]][[3]]) / 2
+m_calt_mse[2, ] <- (steface_1007[[1]][[4]] + steface_1007[[2]][[4]]) / 2
+m_time[2, ] <- (steface_1007[[1]][[5]] + steface_1007[[2]][[5]]) / 2
 ```
 ```{r, summary steface_100 n}
 print("summary for 100 new step face")
@@ -388,14 +388,14 @@ seed.bs <- sapply(steface_5004, seed <- function(l_list) {
     l_list[[6]]
 })
 steface_5004n <- list(
-    m_size[2, ],
-    m_sigma2_mse[2, ],
-    m_c0_mse[2, ],
-    m_calt_mse[2, ],
-    m_time[2, ],
+    m_size[1, ],
+    m_sigma2_mse[1, ],
+    m_c0_mse[1, ],
+    m_calt_mse[1, ],
+    m_time[1, ],
     seed.bs
 )
-save(steface_5004n, file = "steface_5004.RDatan")
+save(steface_5004n, file = "steface_5004n.RData")
 ```
 ```{r, steface_5007n.bs, eval = F, include = F}
 load("simulation/rmd/steface_5007_1n.RData") # simulation/rmd/
@@ -425,12 +425,12 @@ steface_5007n <- list(
 save(steface_5007n, file = "steface_5007n.RData")
 ```
 ```{r, steface_5004n, include = F}
-# load("steface_5004n.RData")
-# m_size[1, ] <- steface_5004n[[1]] / 10
-# m_sigma2_mse[1, ] <- steface_5004n[[2]] / 10
-# m_c0_mse[1, ] <- steface_5004n[[3]] / 10
-# m_calt_mse[1, ] <- steface_5004n[[4]] / 10
-# m_time[1, ] <- steface_5004n[[5]] / 10
+load("steface_5004n.RData")
+m_size[1, ] <- steface_5004n[[1]] / 10
+m_sigma2_mse[1, ] <- steface_5004n[[2]] / 10
+m_c0_mse[1, ] <- steface_5004n[[3]] / 10
+m_calt_mse[1, ] <- steface_5004n[[4]] / 10
+m_time[1, ] <- steface_5004n[[5]] / 10
 ```
 ```{r, steface_5007n, include = F}
 load("steface_5007n.RData")
