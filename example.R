@@ -41,7 +41,7 @@ m_cov_truth <- 1 + tcrossprod(times) - 0.5 * times - tcrossprod(rep(0.5, 80), ti
 # Implement the tests
 set.seed(2021085)
 system.time(fit.b <- bootstrap.test(data, times, nbs = 10,
-bs.mean = T, i_face = T, truncate.tn = 2, center = T))
+bs.mean = T, i_face = T, truncate.tn = 0, center = T))
  
 fit.b$p
 fit.b$Tn
