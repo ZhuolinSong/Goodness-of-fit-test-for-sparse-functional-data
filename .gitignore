@@ -37,3 +37,7 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
+
+# Simulation
+simulation/rmd/*.html
+# simulation/rmd/*.Rdata
