@@ -39,5 +39,5 @@ vignettes/*.pdf
 .Renviron
 
 # Simulation
-/simulation/rmd/*.html
+/simulation/
 # simulation/rmd/*.Rdata
