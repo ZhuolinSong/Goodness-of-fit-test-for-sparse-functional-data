@@ -19,8 +19,7 @@ Imports:
     Bolstad,
     splines,
     face
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+License: MIT License
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
