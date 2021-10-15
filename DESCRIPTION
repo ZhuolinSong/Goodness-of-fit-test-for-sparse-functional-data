@@ -1,12 +1,12 @@
 Package: Ftest.sparse
-Title: What the Package Does (One Line, Title Case)
+Title: Goodness-of-fit test of covariance for sparse functional data
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "Zhuolin",
            family = "Song",
            role = c("aut", "cre"),
            email = "zsong7@ncsu.edu",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
+           comment = c(ORCID = "0000-0001-6756-2591"))
 Description: What the package does (one paragraph).
 Imports:
 	nlme,
