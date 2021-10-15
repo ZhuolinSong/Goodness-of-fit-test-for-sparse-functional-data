@@ -130,8 +130,6 @@ bootstrap.test <- function(data, times, nbs = 1000, nb = 10,
     C.null = C.null,
     sigma2 = sigsq,
     Tn = Tn, p = Tn.stats$p, p.var = Tn.stats$var,
-    bs.approx = bs.stats,
-  Theta.alt = Theta.alt,
-  Theta.null = Theta.null
+    bs.approx = bs.stats
   )
 }

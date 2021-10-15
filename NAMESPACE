@@ -7,4 +7,5 @@ import(matrixcalc)
 import(mgcv)
 import(Bolstad)
 import(refund)
+import(face)
 
