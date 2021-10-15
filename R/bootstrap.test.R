@@ -22,21 +22,36 @@
 # bs.approx: List of values from the null distribution of Tn
 #######################
 
+#' bootstrap.face
+#'
+#' Apply the bootstrap test for testing a quadratic polynomial covariance
+#'
+#' @param data  "data frame with three arguments:
+#'                  (1) "argvals": observation times;
+#'                  (2) "subj": subject indices;
+#'                  (3) "y": values of observations;
+#'  Note that: we only handle complete data, so missing values are not allowed at this moment
+#' @param nbs number of bootstrap samples, default = 1000
+#' @param times  "argvals.new" if we want the estimated covariance function at "argvals.new"; if NULL,
+#' then 100 equidistant points in the range of "argvals" in "data"
+#' @param bs.mean   "center" means if we want to compute population mean
+#' @param nb   number of interior knots for B-spline basis functions to be used;
+#'
+#' @import face
+#' @import Matrix
+#' @return an object "bootstrap.face" contain:
+#'  fit.alt: Alternative model fit (functional principal components analysis)
+#'  fit.null: Null model fit (linear random effects)
+#'  C.alt: Covariance matrix under alternative model
+#'  C.null: Covariance matrix under null model
+#'  tn: Test statistic
+#'  p: p-value for test statistic based on the bs.approx
+#'  bs.approx: List of values from the null distribution of Tn
+#'
+#' @references modified from bootstrap.test.R written by Stephanie
+
 bootstrap.test <- function(data, times, nbs = 1000, nb = 10,
                            i_face = T, bs.mean = T, truncate.tn = 2, ...) {
-  source("calc.mean.R")
-  source("select.knots.R")
-  source("trunc.mat.R")
-  source("ts.fit.R")
-  source("calc.RA.R")
-  source("calc.sigsq.R")
-  source("fitNull.R")
-  source("calc.R0.R")
-  source("irreg2mat.mod.R")
-  source("resample.R")
-  source("p.bs.R")
-  source("matrix.multiply.r")
-
   mu <- calc.mean(data)
   data.demean <- data.frame(.value = data$.value - mu, .index = data$.index, .id = data$.id)
   fit.null <- fitNull(data.demean) # null fit
@@ -60,7 +75,7 @@ bootstrap.test <- function(data, times, nbs = 1000, nb = 10,
   # calculate sigma^2
   if (i_face) {
     data.sigsq <- data.frame(y = data$.value - mu, argvals = data$.index, subj = data$.id)
-    sigsq <- (face.sparse(data.sigsq, ...))$sigma2 # false ?? or we need leave-one-subject-out mean nr??
+    sigsq <- (face::face.sparse(data.sigsq, ...))$sigma2 # false ?? or we need leave-one-subject-out mean nr??
   } else {
     sigsq <- calc.sigsq(data.demean, C.alt, times) # error var
   }
@@ -115,6 +130,8 @@ bootstrap.test <- function(data, times, nbs = 1000, nb = 10,
     C.null = C.null,
     sigma2 = sigsq,
     Tn = Tn, p = Tn.stats$p, p.var = Tn.stats$var,
-    bs.approx = bs.stats
+    bs.approx = bs.stats,
+  Theta.alt = Theta.alt,
+  Theta.null = Theta.null
   )
 }

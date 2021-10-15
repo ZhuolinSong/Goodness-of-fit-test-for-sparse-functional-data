@@ -25,7 +25,7 @@
 #######################
 #setwd("/Applications/Books/research/GEE/test covariance/R code_Oct24/R code")
 
-source("simulation.R")
+devtools::load_all()
 
 stephanie_type1(seed = 2021087, k = 1, n = 100, m = 7, L = 10,
               mixed = T, i_face = T, center = T)
@@ -37,15 +37,29 @@ dev = "trigonometric", r = r_grid_quad[5], L = 10, mixed = T
 # Example 1. Simulated data from null model, with 100 subjects and 80 obs/subj
 RNGkind("L'Ecuyer-CMRG", sample.kind = "Rej")
 set.seed(2021085)
-data <- gen.data(deviation = "trigonometric", nsubj = 100, r = 0, M = 7, mixed_m = T)
-
+data <- gen.data(deviation = "trigonometric", nsubj = 100, r = 0, M = 7, mixed_m = F)
 times <- seq(-1, 1, length.out = 80) # all possible time points
 m_cov_truth <- 1 + tcrossprod(times) - 0.5 * times - tcrossprod(rep(0.5, 80), times)
+
+
 # Implement the tests
 set.seed(2021085)
 system.time(fit.b <- bootstrap.test(data, times, nbs = 10,
 bs.mean = T, i_face = T, truncate.tn = 0, center = T))
- 
+fit.b$Theta.null
+fit.b$Theta.alt
+
+system.time(fit.b <- bootstrap.test(data, times, nbs = 10,
+bs.mean = T, i_face = T, truncate.tn = 1, center = T))
+fit.b$Theta.null
+fit.b$Theta.alt
+
+system.time(fit.b <- bootstrap.test(data, times, nbs = 10,
+bs.mean = T, i_face = T, truncate.tn = 2, center = T))
+fit.b$Theta.null
+fit.b$Theta.alt
+
+
 fit.b$p
 fit.b$Tn
 fit.b$bs.approx

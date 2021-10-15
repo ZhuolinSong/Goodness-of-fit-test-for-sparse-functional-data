@@ -1,21 +1,3 @@
-library(nlme)
-library(stats)
-library(MASS)
-library(refund)
-library(matrixcalc)
-library(mgcv)
-library(Matrix)
-library(Bolstad)
-library(splines)
-library(face)
-
-
-# functions
-source("gen.data.R")
-source("bootstrap.test.R")
-source("direct.test.R")
-source("multivariate.test.R")
-source("grid.R")
 
 stephanie_type1 <- function(seed = 2021087, k, n, m, L = 1000, mixed = T, ...) {
     sim.success <- 0

@@ -37,10 +37,6 @@ trunc.mat.inner <- function(b.fit, Theta, truncate.tn = 1) {
     Theta <- as.matrix(b.fit$Xstar.half %*% Matrix(Theta) %*% b.fit$Xstar.half)
     eigen.fit <- eigen(Theta, symmetric = T)
     efuncs <- b.fit$Xstar.invhalf %*% eigen.fit$vectors
-  } else if (truncate.tn == 3) {
-    Theta <- as.matrix(b.fit$Xstar.invhalf %*% Matrix(Theta) %*% b.fit$Xstar.invhalf)
-    eigen.fit <- eigen(Theta, symmetric = T)
-    efuncs <- b.fit$Xstar.half %*% eigen.fit$vectors
   }
   evals <- as.numeric(eigen.fit$values)
   evals[evals < 1e-5] <- 0

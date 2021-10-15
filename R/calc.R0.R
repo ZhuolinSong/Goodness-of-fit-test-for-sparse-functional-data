@@ -5,7 +5,7 @@
 # Updated: Aug 4, 2018
 
 calc.R0 <- function(fit.null, times) {
-  var.mat <- VarCorr(fit.null)
+  var.mat <- nlme::VarCorr(fit.null)
   sigsq0 <- as.numeric(var.mat[1, 1])
   sigsq1 <- as.numeric(var.mat[2, 1])
   cov01 <- as.numeric(var.mat[2, 3]) * sqrt(sigsq0 * sigsq1) # corr->cov

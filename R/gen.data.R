@@ -22,7 +22,7 @@ gen.data <- function(deviation = "quadratic",
                      r = 0,
                      M = 80,
                      error.var = 1, mixed_m = T) {
-  #set.seed(seed)
+  # set.seed(seed)
   argvals <- seq(-1, 1, length.out = 80) # possible time pts
   data <- NULL
   error.sd <- sqrt(error.var)
@@ -50,6 +50,6 @@ gen.data <- function(deviation = "quadratic",
     v_mi <- rep(M, nsubj)
   }
   obs.ind <- lapply(c(1:nsubj), function(x) sort(sample(c(1:length(argvals)), v_mi[x], replace = F)) + (x - 1) * length(argvals))
-  
+
   return(full.data[unlist(obs.ind), ])
 }

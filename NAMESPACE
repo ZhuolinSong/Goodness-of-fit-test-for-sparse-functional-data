@@ -1,0 +1,10 @@
+export(select.knots)
+import(nlme)
+import(stats)
+import(Matrix)
+import(splines)
+import(matrixcalc)
+import(mgcv)
+import(Bolstad)
+import(refund)
+

@@ -4,6 +4,6 @@
 # Updated: Aug 4, 2018
 
 calc.mean <- function(data) { # smooth mean
-  gam0 <- gam(as.vector(data$.value) ~ s(data$.index, k = 10))
+  gam0 <- mgcv::gam(as.vector(data$.value) ~ s(data$.index, k = 10))
   return(gam0$fitted.values)
 }
