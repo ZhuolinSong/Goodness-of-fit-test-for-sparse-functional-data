@@ -1,5 +1,5 @@
 library(parallel)
-source("simulation.R")
+devtools::load_all()
 RNGkind("L'Ecuyer-CMRG")
 data(grid)
 

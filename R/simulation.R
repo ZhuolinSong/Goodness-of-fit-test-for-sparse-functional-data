@@ -1,5 +1,6 @@
 
-stephanie_type1 <- function(seed = 2021087, k, n, m, L = 1000, mixed = T, ...) {
+stephanie_type1 <- function(seed = 2021087, k, n, m, L = 1000,
+                mixed = T, err = 1, ...) {
     sim.success <- 0
     sim.stats <- c()
     sim.sigma2 <- c()
@@ -11,7 +12,7 @@ stephanie_type1 <- function(seed = 2021087, k, n, m, L = 1000, mixed = T, ...) {
 
     while (sim.success < k) {
         set.seed(seed + sim.success)
-        data <- gen.data(nsubj = n, r = 0, M = m, mixed_m = mixed)
+        data <- gen.data(nsubj = n, r = 0, M = m, error.var = err, mixed_m = mixed)
         l_time[[sim.success + 1]] <- try(system.time(
             fit.b <- bootstrap.test(data, times, nbs = L, ...))[1:3],
             silent = T)
@@ -26,7 +27,7 @@ stephanie_type1 <- function(seed = 2021087, k, n, m, L = 1000, mixed = T, ...) {
         sim.calt <- c(sim.calt, norm(fit.b$C.alt - cov_truth, type = "F"))
     }
     list(c(mean(sim.stats <= 0.05), mean(sim.stats <= 0.1)),
-        mean((sim.sigma2 - 1)^2),
+        mean((sim.sigma2 - err)^2),
         mean(sim.c0),
         mean(sim.calt),
         rowMeans(matrix(unlist(l_time), nrow = 3)),
@@ -34,7 +35,8 @@ stephanie_type1 <- function(seed = 2021087, k, n, m, L = 1000, mixed = T, ...) {
         sim.stats)
 }
 
-stephanie_type2 <- function(seed = 2021087, k, n, m, dev, r, L = 1000, mixed = T, ...) {
+stephanie_type2 <- function(seed = 2021087, k, n, m, dev, r, L = 1000,
+            mixed = T, err = 1, ...) {
     sim.success <- 0
     sim.stats <- c()
     sim.sigma2 <- c()
@@ -46,7 +48,7 @@ stephanie_type2 <- function(seed = 2021087, k, n, m, dev, r, L = 1000, mixed = T
 
     while (sim.success < k) {
         set.seed(seed + sim.success)
-        data <- gen.data(deviation = dev, nsubj = n, r = r, M = m, mixed_m = mixed)
+        data <- gen.data(deviation = dev, nsubj = n, r = r, M = m, error.var = err, mixed_m = mixed)
         l_time[[sim.success + 1]] <- try(system.time(
             fit.b <- bootstrap.test(data, times, nbs = L, ...))[1:3],
             silent = T)
@@ -61,7 +63,7 @@ stephanie_type2 <- function(seed = 2021087, k, n, m, dev, r, L = 1000, mixed = T
         sim.calt <- c(sim.calt, norm(fit.b$C.alt - cov_truth, type = "F"))
     }
     list(mean(sim.stats <= 0.05),
-        mean((sim.sigma2 - 1)^2),
+        mean((sim.sigma2 - err)^2),
         mean(sim.c0),
         mean(sim.calt),
         rowMeans(matrix(unlist(l_time), nrow = 3)),
