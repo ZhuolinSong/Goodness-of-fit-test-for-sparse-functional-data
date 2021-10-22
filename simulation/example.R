@@ -28,7 +28,7 @@
 devtools::load_all()
 
 stephanie_type1(seed = 2021087, k = 1, n = 100, m = 7, L = 10,
-              mixed = T, err = 0.25, i_face = T, center = T)
+              mixed = T, err = 1, i_face = T, center = T)
 
 stephanie_type2(seed = 2021087, k = 1, n = 100, m = 7,
               dev = "trigonometric", r = r_grid_quad[2], L = 10,

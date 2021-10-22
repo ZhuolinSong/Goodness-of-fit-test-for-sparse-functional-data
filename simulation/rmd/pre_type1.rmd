@@ -708,7 +708,7 @@ for (i in 1:4) {
 }
 ```
 
-```{r, steface_quad_1007, include=F}
+```{r, quad_1007, include=F}
 load("steface_quad_1007.RData") # simulation/rmd/
 for (i in 1:4) {
     m_size[2, i] <- steface_quad_1007[[i]][[1]]
@@ -718,47 +718,112 @@ for (i in 1:4) {
     m_code[2, i] <- code_quad_1007[[i]][[1]]
 }
 ```
-```{r, summary steface_quad_100}
+```{r, summary quad_100}
 print("summary for quad 100")
 m_size
 m_code
 ```
 
-```{r,  plot steface_quad_100}
-par(mfrow = c(1, 2))
+```{r,  plot quad_100}
+par(mfrow = c(1, 1))
 v_dev <- seq(0, 1, length.out = 5)
-plot(v_dev, c(0.05, m_size[1, ]), ylim = c(0, 1), type = "o")
-lines(v_dev, c(0.05, m_code[1, ]), ylim = c(0, 1))
-plot(v_dev, c(0.05, m_size[2, ]), ylim = c(0, 1), type = "o")
-lines(v_dev, c(0.05, m_code[2, ]), ylim = c(0, 1))
+plot(v_dev, c(0.0524, m_size[1, ]),
+    ylim = c(0, 1),
+    type = "l", lty = 1, col = "grey",
+    main = "Power under Quadratic Deviations", xlab = "Deviatin from Null", ylab = "Power, Quadratic Dev."
+)
+lines(v_dev, c(0.0444, m_size[2, ]), ylim = c(0, 1), lty = 1, col = "black")
+lines(v_dev, c(0.1074, m_code[1, ]), ylim = c(0, 1), lty = 2, col = "grey")
+lines(v_dev, c(0.0752, m_code[2, ]), ylim = c(0, 1), lty = 2, col = "black")
+legend("bottomright",
+    legend = c("steface, m = 4", "steface, m = 7", "orig, m = 4", "orig, m = 7"),
+    col = c("grey", 1, "grey", 1), lty = c(1, 1, 2, 2)
+)
+
+abline(h = 1, lty = "dotted", col = "red")
+abline(h = 0.05, lty = "dotted", col = "red")
 ```
 
 ```{r, include=F}
 m_size <- matrix(NA, nrow = 2, ncol = 4)
+m_code <- matrix(NA, nrow = 2, ncol = 4)
 ```
 
-```{r, steface_trig_1004, include=F}
+```{r, trig_1004, include=F}
 load("steface_trig_1004.RData") # simulation/rmd/
 for (i in 1:4) {
     m_size[1, i] <- steface_trig_1004[[i]][[1]]
 }
+load("code_trig_1004.RData")
+for (i in 1:4) {
+    m_code[1, i] <- code_trig_1004[[i]][[1]]
+}
 ```
 
-```{r, steface_trig_1007, include=F}
+```{r, trig_1007, include=F}
 load("steface_trig_1007.RData") # simulation/rmd/
 for (i in 1:4) {
     m_size[2, i] <- steface_trig_1007[[i]][[1]]
 }
+load("code_trig_1007.RData")
+for (i in 1:4) {
+    m_code[2, i] <- code_trig_1007[[i]][[1]]
+}
 ```
-```{r, summary steface_trig_100}
+```{r, summary trig_100}
 print("summary for steface_trig")
 m_size
+m_code
 ```
 
-```{r,  plot steface_trig_100}
-par(mfrow = c(1, 2), ylim = c(0, 1))
+```{r,  plot trig_100}
+par(mfrow = c(1, 1))
 v_dev <- seq(0, 1, length.out = 5)
-plot(v_dev, c(0.05, m_size[1, ]), ylim = c(0, 1))
-plot(v_dev, c(0.05, m_size[2, ]), ylim = c(0, 1))
+plot(
+    main = "Power under Trigonometric Deviations", xlab = "Deviatin from Null", ylab = "Power, Trigonometric Dev.",
+    v_dev, c(0.0524, m_size[1, ]), ylim = c(0, 1), type = "l", lty = 1, col = "grey"
+)
+lines(v_dev, c(0.0444, m_size[2, ]), ylim = c(0, 1), lty = 1, col = "black")
+lines(v_dev, c(0.1074, m_code[1, ]), ylim = c(0, 1), lty = 2, col = "grey")
+lines(v_dev, c(0.0752, m_code[2, ]), ylim = c(0, 1), lty = 2, col = "black")
+legend("bottomright",
+    legend = c("steface, m = 4", "steface, m = 7", "orig, m = 4", "orig, m = 7"),
+    col = c("grey", 1, "grey", 1), lty = c(1, 1, 2, 2)
+)
+abline(h = 1, lty = "dotted", col = "red")
+abline(h = 0.05, lty = "dotted", col = "red")
 ```
 
+```{r, include=F}
+m_size <- matrix(NA, nrow = 2, ncol = 2)
+m_sigma2_mse <- matrix(NA, nrow = 2, ncol = 1)
+m_c0_mse <- matrix(NA, nrow = 2, ncol = 1)
+m_calt_mse <- matrix(NA, nrow = 2, ncol = 1)
+m_time <- matrix(NA, nrow = 2, ncol = 3)
+```
+
+```{r, steface_1004_025, include=F}
+# load("steface_1004_025.RData") # simulation/rmd/
+# m_size[1, ] <- (steface_1004[[1]][[1]] + steface_1004[[2]][[1]]) / 2
+# m_sigma2_mse[1, ] <- (steface_1004[[1]][[2]] + steface_1004[[2]][[2]]) / 2
+# m_c0_mse[1, ] <- (steface_1004[[1]][[3]] + steface_1004[[2]][[3]]) / 2
+# m_calt_mse[1, ] <- (steface_1004[[1]][[4]] + steface_1004[[2]][[4]]) / 2
+# m_time[1, ] <- (steface_1004[[1]][[5]] + steface_1004[[2]][[5]]) / 2
+```
+
+```{r, steface_1007_025, include=F}
+load("steface_1007_025.RData") # simulation/rmd/
+m_size[2, ] <- (steface_1007[[1]][[1]] + steface_1007[[2]][[1]]) / 2
+m_sigma2_mse[2, ] <- (steface_1007[[1]][[2]] + steface_1007[[2]][[2]]) / 2
+m_c0_mse[2, ] <- (steface_1007[[1]][[3]] + steface_1007[[2]][[3]]) / 2
+m_calt_mse[2, ] <- (steface_1007[[1]][[4]] + steface_1007[[2]][[4]]) / 2
+m_time[2, ] <- (steface_1007[[1]][[5]] + steface_1007[[2]][[5]]) / 2
+```
+```{r, summary steface_100 025}
+print("summary for 100 sigma = 0.25")
+m_size
+m_sigma2_mse
+m_c0_mse
+m_calt_mse
+m_time
+```
