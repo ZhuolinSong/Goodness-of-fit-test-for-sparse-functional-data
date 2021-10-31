@@ -26,9 +26,11 @@
 #setwd("/Applications/Books/research/GEE/test covariance/R code_Oct24/R code")
 
 devtools::load_all()
+RNGkind("L'Ecuyer-CMRG")
+library(refund)
 
-stephanie_type1(seed = 2021087, k = 1, n = 100, m = 7, L = 10,
-              mixed = T, err = 1, i_face = T, center = T)
+stephanie_type1(seed = 2021087, k = 1, n = 100, m = 7, L = 100,
+              mixed = T, err = 1, approx = F, i_face = T, truncate.tn = 1)
 
 stephanie_type2(seed = 2021087, k = 1, n = 100, m = 7,
               dev = "trigonometric", r = r_grid_quad[2], L = 10,
@@ -135,8 +137,8 @@ max(count)
 data <- data.frame(.value = value, .index = index, .id = id)
 fit.b1 <- bootstrap.test(data, times, i_face = T) # pilot bootstrap test with 10 resamples
 
-fit.b1$p
+fit.b1$p # p-value = 0.132, sigma^2 = 46976.76
 # Log-transform stepface
 data <- data.frame(.value = log(value), .index = index, .id = id)
 fit.b2 <- bootstrap.test(data, times, i_face = T) # pilot bootstrap test with 10 resamples
-fit.b2$p
+fit.b2$p # p-value = 0.151, sigma^2 = 0.114712

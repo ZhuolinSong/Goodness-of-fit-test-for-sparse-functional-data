@@ -51,7 +51,7 @@
 #' @references modified from bootstrap.test.R written by Stephanie
 
 bootstrap.test <- function(data, times, nbs = 1000, nb = 10,
-                           i_face = T, bs.mean = T, truncate.tn = 2, ...) {
+                           i_face = T, bs.mean = T, truncate.tn = 2, approx = F,...) {
   mu <- calc.mean(data)
   data.demean <- data.frame(.value = data$.value - mu, .index = data$.index, .id = data$.id)
   fit.null <- fitNull(data.demean) # null fit
@@ -61,17 +61,23 @@ bootstrap.test <- function(data, times, nbs = 1000, nb = 10,
   b.fit <- ts.fit(data.demean, times = times, H = nb)
   Rbar0.fit <- calc.R0(fit.null, b.fit$Time)
 
-
-  Theta.null <- trunc.mat.theta(b.fit, Rbar0.fit$Rbar0, nb, truncate.tn) # Smooth null cov
-  Theta.alt <- trunc.mat.theta(b.fit, b.fit$R, nb, truncate.tn) # Smooth alt cov
-  DX <- (Theta.null - Theta.alt) %*% b.fit$Xstar
-  Tn <- sqrt(sum(DX * t(DX)))
+  if (approx) {
+    C.null <- trunc.mat.approx(b.fit, Rbar0.fit$Rbar0, nb, truncate.tn)
+    C.alt <- trunc.mat.approx(b.fit, b.fit$R, nb, truncate.tn)
+    Tn <- norm((C.alt - C.null) / length(times), type = "F")
+  } else {
+    Theta.null <- trunc.mat.theta(b.fit, Rbar0.fit$Rbar0, nb, truncate.tn) # Smooth null cov
+    Theta.alt <- trunc.mat.theta(b.fit, b.fit$R, nb, truncate.tn) # Smooth alt cov
+    DX <- (Theta.null - Theta.alt) %*% b.fit$Xstar
+    Tn <- sqrt(sum(DX * t(DX)))
+    C.alt <- as.matrix(tcrossprod(b.fit$Bstar %*% Matrix(Theta.alt), b.fit$Bstar))
+    C.null <- as.matrix(tcrossprod(b.fit$Bstar %*% Matrix(Theta.null), b.fit$Bstar))
+  }
   #print(Tn)
-  C.alt <- as.matrix(tcrossprod(b.fit$Bstar %*% Matrix(Theta.alt), b.fit$Bstar))
-  C.null <- as.matrix(tcrossprod(b.fit$Bstar %*% Matrix(Theta.null), b.fit$Bstar))
   #print(norm(C.alt - C.null, type = "F"))
   #DX <- trunc.mat(b.fit, Rbar0.fit$Rbar0, b.fit$R, nb, truncate.tn) %*% b.fit$Xstar
   #print(sqrt(sum(DX * t(DX))))
+
   # calculate sigma^2
   if (i_face) {
     data.sigsq <- data.frame(y = data$.value - mu, argvals = data$.index, subj = data$.id)
@@ -114,10 +120,16 @@ bootstrap.test <- function(data, times, nbs = 1000, nb = 10,
     RbarA <- calc.RA(data.demean.bs) # R for alt
 
     ###### d. calculate Tn.bs (0.0s)
-    Delta.bs <- trunc.mat(b.fit, Rbar0, RbarA, nb, truncate.tn) # slow here
+    if (approx) {
+      C.null.bs <- trunc.mat.approx(b.fit, Rbar0, nb, truncate.tn)
+      C.alt.bs <- trunc.mat.approx(b.fit, RbarA, nb, truncate.tn)
+      Tn.bs <- norm((C.alt.bs - C.null.bs) / length(times), type = "F")
+    } else {
+      Delta.bs <- trunc.mat(b.fit, Rbar0, RbarA, nb, truncate.tn) # slow here
+      DX.bs <- Delta.bs %*% b.fit$Xstar
+      Tn.bs <- sqrt(sum(DX.bs * t(DX.bs)))
+    }
 
-    DX.bs <- Delta.bs %*% b.fit$Xstar
-    Tn.bs <- sqrt(sum(DX.bs * t(DX.bs)))
     bs.stats <- c(bs.stats, Tn.bs) # save bs stats
     bs.success <- bs.success + 1
 #print(proc.time() - ptm)

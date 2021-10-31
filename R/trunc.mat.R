@@ -42,3 +42,19 @@ trunc.mat.inner <- function(b.fit, Theta, truncate.tn = 1) {
   evals[evals < 1e-5] <- 0
   return(matrix.multiply(efuncs, evals) %*% t(efuncs))
 }
+
+trunc.mat.approx <- function(b.fit, R, nb, truncate.tn = 1) {
+  alpha <- b.fit$B.est %*% R
+  Theta <- matrix(b.fit$G %*% alpha, nrow = nb)
+  Gmat <- as.matrix(tcrossprod(b.fit$Bstar %*% Matrix(Theta), b.fit$Bstar))
+  Gmat2 <- 0.5 * (Gmat + t(Gmat))
+  # truncation
+  if (truncate.tn) {
+    eigen.fit <- eigen(Gmat2)
+    efuncs <- eigen.fit$vectors
+    evals <- as.numeric(eigen.fit$values)
+    evals[evals < 1e-5] <- 0
+    Gmat2 <- efuncs %*% tcrossprod(diag(evals), efuncs)
+  }
+  return(Gmat2)
+}
