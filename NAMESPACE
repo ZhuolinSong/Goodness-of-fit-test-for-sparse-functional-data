@@ -8,4 +8,5 @@ import(mgcv)
 import(Bolstad)
 import(refund)
 import(face)
+import(RLRsim)
 

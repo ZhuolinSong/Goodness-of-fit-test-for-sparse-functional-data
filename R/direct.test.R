@@ -15,13 +15,28 @@
 # fit.null: Null model fit (linear random effects)
 # fit.quad: Model fit with just quadratic term
 # RLRT: Results for restricted-likelihood ratio test of quadratic term
+# Outputs
+# fit.alt: Alternative model fit (functional principal components analysis)
+# fit.null: Null model fit (linear random effects)
+# C.alt: Covariance matrix under alternative model
+# C.null: Covariance matrix under null model
+# tn: Test statistic
+# p: p-value for test statistic based on the bs.approx
+# bs.approx: List of values from the null distribution of Tn
+#######################
 
+#' @param data  "data frame with three arguments:
+#'                  (1) "argvals": observation times;
+#'                  (2) "subj": subject indices;
+#'                  (3) "y": values of observations;
+#'  Note that: we only handle complete data, so missing values are not allowed at this moment
+#' @param times  "argvals.new" if we want the estimated covariance function at "argvals.new"; if NULL,
+
+#' @import RLRsim
+#' @import matrixcalc
+#' @import mgcv
+#' @import nlme
 direct.test <- function(data, times) {
-  # libraries
-  library(RLRsim)
-  library(matrixcalc)
-  library(nlme)
-  library(mgcv)
 
   # functions
   calc.mean.direct <- function(data) { # smooth mean
@@ -30,15 +45,15 @@ direct.test <- function(data, times) {
   }
   fit.alt.direct <- function(data, nl, nk) {
     try(lme(.value ~ 1, random = list(
-      .id = nlme::pdIdent(~ .indexsq - 1),
-      .id = nlme::pdSymm(~ 1 + .index)
+      .id = pdIdent(~ .indexsq - 1),
+      .id = pdSymm(~ 1 + .index)
     ), data = data), silent = TRUE)
   }
   fit.null.direct <- function(data, nl, nk) {
-    try(lme(.value ~ 1, random = list(.id = nlme::pdSymm(~ 1 + .index)), data = data), silent = TRUE)
+    try(lme(.value ~ 1, random = list(.id = pdSymm(~ 1 + .index)), data = data), silent = TRUE)
   }
   fit.quad.direct <- function(data, nl, nk) {
-    try(lme(.value ~ 1, random = list(.id = nlme::pdIdent(~ .indexsq - 1)), data = data), silent = TRUE)
+    try(lme(.value ~ 1, random = list(.id = pdIdent(~ .indexsq - 1)), data = data), silent = TRUE)
   }
 
   mu <- calc.mean.direct(data)
@@ -57,6 +72,6 @@ direct.test <- function(data, times) {
   if ("try-error" %in% class(quad.fit)) {
     return("Failure in quadratic-only model fit")
   }
-  RLRT <- RLRsim::exactRLRT(quad.fit, alt.fit, null.fit)
+  RLRT <- exactRLRT(quad.fit, alt.fit, null.fit)
   list(mu = mu, alt.fit = alt.fit, null.fit = null.fit, quad.fit = quad.fit, RLRT = RLRT)
 }

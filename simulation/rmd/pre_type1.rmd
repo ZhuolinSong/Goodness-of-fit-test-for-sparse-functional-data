@@ -746,8 +746,8 @@ lines(v_dev, c(0.0472, m_code[2, ]), ylim = c(0, 1), lty = 1, col = "red", lwd =
 lines(v_dev, c(0.1074, m_plain[1, ]), ylim = c(0, 1), lty = 2, col = "blue", lwd = 2)
 lines(v_dev, c(0.0752, m_plain[2, ]), ylim = c(0, 1), lty = 1, col = "blue", lwd = 2)
 legend("bottomright",
-    legend = c("Ftest(whole), m = 7", "Ftest(t=80), m = 7", "orig, m = 7", "Ftest(whole), m = 4", "Ftest(t=80), m = 4", "bootstrap, m = 4"),
-    col = rep(c("black", "red", "blue"), 2), lty = rep(1:2, each = 3), lwd = rep(2, 6)
+    legend = c("Sparse test(t=80), m = 7", "Sparse test(optimal), m = 7", "Original test, m = 7", "Sparse test(t=80), m = 4", "Sparse test(optimal), m = 4", "Original test, m = 4"),
+    col = rep(c("red", "black", "blue"), 2), lty = rep(1:2, each = 3), lwd = rep(2, 6)
 )
 
 abline(h = 1, lty = "dotted", col = "red")
@@ -810,8 +810,8 @@ lines(v_dev, c(0.0472, m_code[2, ]), ylim = c(0, 1), lty = 1, col = "red", lwd =
 lines(v_dev, c(0.1074, m_plain[1, ]), ylim = c(0, 1), lty = 2, col = "blue", lwd = 2)
 lines(v_dev, c(0.0752, m_plain[2, ]), ylim = c(0, 1), lty = 1, col = "blue", lwd = 2)
 legend("bottomright",
-    legend = c("Ftest(whole), m = 7", "Ftest(t=80), m = 7", "orig, m = 7", "Ftest(whole), m = 4", "Ftest(t=80), m = 4", "bootstrap, m = 4"),
-    col = rep(c("black", "red", "blue"), 2), lty = rep(1:2, each = 3), lwd = rep(2, 6)
+    legend = c("Sparse test(t=80), m = 7", "Sparse test(optimal), m = 7", "Original test, m = 7", "Sparse test(t=80), m = 4", "Sparse test(optimal), m = 4", "Original test, m = 4"),
+    col = rep(c("red", "black", "blue"), 2), lty = rep(1:2, each = 3), lwd = rep(2, 6)
 )
 
 abline(h = 1, lty = "dotted", col = "red")
@@ -912,6 +912,89 @@ m_sigma2_mse
 ```{r, include=F}
 m_size <- matrix(NA, nrow = 2, ncol = 2)
 m_sigma2_mse <- matrix(NA, nrow = 2, ncol = 1)
+```
+```{r, code_1004_025, include=F}
+load("code_1004_025.RData") # simulation/rmd/
+m_size[1, ] <- (code_1004[[1]][[1]] + code_1004[[2]][[1]]) / 2
+m_sigma2_mse[1, ] <- (code_1004[[1]][[2]] + code_1004[[2]][[2]]) / 2
+```
+```{r, code_1007_025, include=F}
+load("code_1007_025.RData") # simulation/rmd/
+m_size[2, ] <- (code_1007[[1]][[1]] + code_1007[[2]][[1]]) / 2
+m_sigma2_mse[2, ] <- (code_1007[[1]][[2]] + code_1007[[2]][[2]]) / 2
+```
+```{r, summary code_100 025}
+print("summary for 100 approx sigma = 0.25")
+m_size
+m_sigma2_mse
+```
+
+```{r, include=F}
+m_size <- matrix(0, nrow = 2, ncol = 2)
+m_sigma2_mse <- matrix(0, nrow = 2, ncol = 1)
+```
+
+```{r, steface_5004_04.bs, eval = F, include = F}
+load("simulation/rmd/steface_5004_1_4.RData") # simulation/rmd/
+load("simulation/rmd/steface_5004_2_4.RData")
+load("simulation/rmd/steface_5004_3_4.RData")
+load("simulation/rmd/steface_5004_4_4.RData")
+load("simulation/rmd/steface_5004_5_4.RData")
+steface_5004 <- c(steface_5004_1, steface_5004_2, steface_5004_3, steface_5004_4, steface_5004_5)
+for (i in seq_along(steface_5004)) {
+    m_size[1, ] <- m_size[1, ] + steface_5004[[i]][[1]]
+    m_sigma2_mse[1, ] <- m_sigma2_mse[1, ] + steface_5004[[i]][[2]]
+}
+seed.bs <- sapply(steface_5004, seed <- function(l_list) {
+    l_list[[3]]
+})
+steface_5004_04 <- list(
+    m_size[1, ],
+    m_sigma2_mse[1, ],
+    seed.bs
+)
+save(steface_5004_04, file = "steface_5004_04.RData")
+```
+```{r, steface_5007_04.bs, eval = F, include = F}
+load("simulation/rmd/steface_5007_1_4.RData") # simulation/rmd/
+load("simulation/rmd/steface_5007_2_4.RData")
+load("simulation/rmd/steface_5007_3_4.RData")
+load("simulation/rmd/steface_5007_4_4.RData")
+load("simulation/rmd/steface_5007_5_4.RData")
+steface_5007 <- c(steface_5007_1, steface_5007_2, steface_5007_3, steface_5007_4, steface_5007_5)
+for (i in seq_along(steface_5007)) {
+    m_size[2, ] <- m_size[2, ] + steface_5007[[i]][[1]]
+    m_sigma2_mse[2, ] <- m_sigma2_mse[2, ] + steface_5007[[i]][[2]]
+}
+seed.bs <- sapply(steface_5007, seed <- function(l_list) {
+    l_list[[3]]
+})
+steface_5007_04 <- list(
+    m_size[2, ],
+    m_sigma2_mse[2, ],
+    seed.bs
+)
+save(steface_5007_04, file = "steface_5007_04.RData")
+```
+```{r, steface_5004_04, include = F}
+load("steface_5004_04.RData") # simulation/rmd/
+m_size[1, ] <- steface_5004_04[[1]] / 10
+m_sigma2_mse[1, ] <- steface_5004_04[[2]] / 10
+```
+```{r, steface_5007_04, include = F}
+load("steface_5007_4.RData")
+m_size[2, ] <- steface_5007_04[[1]] / 10
+m_sigma2_mse[2, ] <- steface_5007_04[[2]] / 10
+```
+```{r, summary steface_500_04}
+print("summary for 500 sigma = 4")
+m_size
+m_sigma2_mse
+```
+
+```{r, include=F}
+m_size <- matrix(NA, nrow = 2, ncol = 2)
+m_sigma2_mse <- matrix(NA, nrow = 2, ncol = 1)
 m_time <- matrix(NA, nrow = 2, ncol = 3)
 ```
 ```{r, steface_1004_04, include=F}
@@ -932,3 +1015,25 @@ m_size
 m_sigma2_mse
 m_time
 ```
+
+
+```{r, include=F}
+m_size <- matrix(NA, nrow = 2, ncol = 2)
+m_sigma2_mse <- matrix(NA, nrow = 2, ncol = 1)
+```
+```{r, plain_1004_04, include=F}
+load("plain_1004_4.RData") # simulation/rmd/
+m_size[1, ] <- (code_1004[[1]][[1]] + code_1004[[2]][[1]]) / 2
+m_sigma2_mse[1, ] <- (code_1004[[1]][[2]] + code_1004[[2]][[2]]) / 2
+```
+```{r, plain_1007_04, include=F}
+load("plain_1007_4.RData") # simulation/rmd/
+m_size[2, ] <- (code_1007[[1]][[1]] + code_1007[[2]][[1]]) / 2
+m_sigma2_mse[2, ] <- (code_1007[[1]][[2]] + code_1007[[2]][[2]]) / 2
+```
+```{r, summary plain_100 04}
+print("summary for plain 100 sigma = 4")
+m_size
+m_sigma2_mse
+```
+

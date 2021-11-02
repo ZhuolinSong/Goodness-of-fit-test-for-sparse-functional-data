@@ -29,12 +29,28 @@ devtools::load_all()
 RNGkind("L'Ecuyer-CMRG")
 library(refund)
 
+# Type 1: Ftest(optimal)
 stephanie_type1(seed = 2021087, k = 1, n = 100, m = 7, L = 100,
-              mixed = T, err = 1, approx = F, i_face = T, truncate.tn = 1)
+              mixed = T, err = 1, approx = F, i_face = T, truncate.tn = 2)
+# Type 1: Ftest(approx)
+stephanie_type1(seed = 2021087, k = 1, n = 100, m = 7, L = 100,
+              mixed = T, err = 1, approx = T, i_face = T, truncate.tn = 1)
+# Type 1: Original Test
+stephanie_type1(seed = 2021087, k = 1, n = 100, m = 7, L = 100,
+              mixed = T, err = 1, approx = T, i_face = F, truncate.tn = 1)
 
+# Type 2: Ftest(optimal)
 stephanie_type2(seed = 2021087, k = 1, n = 100, m = 7,
               dev = "trigonometric", r = r_grid_quad[2], L = 10,
-              mixed = T, err = 4, i_face = T, center = T)
+              mixed = T, err = 4, i_face = T, truncate.tn = 2, approx = F)
+# Type 2: Ftest(approx)
+stephanie_type2(seed = 2021087, k = 1, n = 100, m = 7,
+              dev = "trigonometric", r = r_grid_quad[2], L = 10,
+              mixed = T, err = 4, i_face = T, truncate.tn = 1, approx = T)
+# Type 2: Original Test
+stephanie_type2(seed = 2021087, k = 1, n = 100, m = 7,
+              dev = "trigonometric", r = r_grid_quad[2], L = 10,
+              mixed = T, err = 4, i_face = T, truncate.tn = 1, approx = T)
 
 # Example 1. Simulated data from null model, with 100 subjects and 80 obs/subj
 RNGkind("L'Ecuyer-CMRG", sample.kind = "Rej")
@@ -71,6 +87,7 @@ norm(fit.b$C.alt - m_cov_truth, type = "F")
 
 # fit.b<-bootstrap.test(data,times,nbs=1000) # full bootstrap test with 1000 resamples
 fit.d <- direct.test(data, times) # direct test
+fit.d$RLRT
 fit.m <- multivariate.test(data, times) # multivariate test (note: data must be dense, ie M=80)
 
 
@@ -134,11 +151,40 @@ min(count)
 max(count)
 
 # No log-transform stepface
+RNGkind("L'Ecuyer-CMRG", sample.kind = "Rej")
+set.seed(2021085)
 data <- data.frame(.value = value, .index = index, .id = id)
-fit.b1 <- bootstrap.test(data, times, i_face = T) # pilot bootstrap test with 10 resamples
+### Ftest(optimal)
+fit.b1 <- bootstrap.test(data, times, approx = F, i_face = T, truncate.tn = 2)
+fit.b1$p # p-value = 0.128, Tn = 0.08524647
+fit.b1$Tn
+### Ftest(approx)
+fit.b2 <- bootstrap.test(data, times, approx = T, i_face = T, truncate.tn = 1)
+fit.b2$p # p-value = 0.158, Tn =  50052.47
+fit.b2$Tn
+### Original Test
+fit.b3 <- bootstrap.test(data, times, approx = T, i_face = F, truncate.tn = 1)
+fit.b3$p # p-value = 0.145, Tn = 50052.47
+fit.b3$Tn
+### Direct Test
+fit.d1 <- direct.test(data, times)
+fit.d1$RLRT #RLRT = 4.6571, p-value = 0.016
 
-fit.b1$p # p-value = 0.132, sigma^2 = 46976.76
 # Log-transform stepface
 data <- data.frame(.value = log(value), .index = index, .id = id)
-fit.b2 <- bootstrap.test(data, times, i_face = T) # pilot bootstrap test with 10 resamples
-fit.b2$p # p-value = 0.151, sigma^2 = 0.114712
+### Ftest(optimal)
+fit.b4 <- bootstrap.test(data, times, approx = F, i_face = T, truncate.tn = 2)
+fit.b4$p # p-value = 0.148, Tn = 0.08524647
+fit.b4$Tn
+### Ftest(approx)
+fit.b5 <- bootstrap.test(data, times, approx = T, i_face = T, truncate.tn = 1)
+fit.b5$p # p-value = 0.182, Tn = 0.1007515
+fit.b5$Tn
+### Original Test
+fit.b6 <- bootstrap.test(data, times, approx = T, i_face = F, truncate.tn = 1)
+fit.b6$p # p-value = 0.132, Tn = 0.1007515
+fit.b6$Tn
+### Direct Test
+fit.d2 <- direct.test(data, times)
+fit.d2$RLRT #RLRT = 1.9078, p-value = 0.0796
+

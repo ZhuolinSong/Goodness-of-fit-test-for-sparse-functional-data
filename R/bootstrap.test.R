@@ -35,7 +35,12 @@
 #' @param times  "argvals.new" if we want the estimated covariance function at "argvals.new"; if NULL,
 #' then 100 equidistant points in the range of "argvals" in "data"
 #' @param bs.mean   "center" means if we want to compute population mean
-#' @param nb   number of interior knots for B-spline basis functions to be used;
+#' @param nb   number of interior knots for B-spline basis functions to be used
+#' @param i_face  boolean default true, whether to use face estimated sigma square
+#' @param truncate.tn truncation type:0.no truncation,
+#'                                    1.direct truncation,
+#'                                    2.optimal truncation
+#' @param approx boolean default false, whether to use new covariance to calculate test statistics
 #'
 #' @import face
 #' @import Matrix
