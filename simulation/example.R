@@ -146,9 +146,9 @@ for (i in seq_len(nrow(cd4))) {
     new.subj <- new.subj + 1
   }
 }
-mean(count)
-min(count)
-max(count)
+mean(count) #5.16
+min(count) #1
+max(count) #11
 
 # No log-transform stepface
 RNGkind("L'Ecuyer-CMRG", sample.kind = "Rej")
@@ -188,3 +188,72 @@ fit.b6$Tn
 fit.d2 <- direct.test(data, times)
 fit.d2$RLRT #RLRT = 1.9078, p-value = 0.0796
 
+
+# CD4 count (with m >= 5)
+times <- round(seq(-1, 1, length.out = 61), digits = 5)
+# Clean data of subjects w/ missing obs and renumber subjs sequentially
+delete.subj <- NULL
+data <- NULL # final dataset
+value <- NULL; id <- NULL; index <- NULL; count <- NULL
+new.subj <- 1
+
+for (i in seq_len(nrow(cd4))) {
+  subj.idx <- which(!is.na(cd4[i, ]))
+  subj.value <- cd4[i, subj.idx]
+  subj.index <- times[subj.idx]
+  subj.count <- length(subj.idx)
+  if (subj.count < 5) { # (with m >= 5)
+    delete.subj <- c(delete.subj, i)
+  }
+  else {
+    id <- c(id, rep(new.subj, subj.count))
+    value <- c(value, subj.value)
+    index <- c(index, subj.index)
+    count <- c(count, subj.count)
+    new.subj <- new.subj + 1
+  }
+}
+mean(count) #6.7136
+min(count) #5
+max(count) #11
+length(value) #1430
+new.subj #214
+
+# No log-transform stepface(with m >= 5)
+RNGkind("L'Ecuyer-CMRG", sample.kind = "Rej")
+set.seed(2021085)
+data <- data.frame(.value = value, .index = index, .id = id)
+### Ftest(optimal)(with m >= 5)
+fit.b1 <- bootstrap.test(data, times, approx = F, i_face = T, truncate.tn = 2)
+fit.b1$p # p-value = 0.13, Tn = 38003.03
+fit.b1$Tn
+### Ftest(approx)(with m >= 5)
+fit.b2 <- bootstrap.test(data, times, approx = T, i_face = T, truncate.tn = 1)
+fit.b2$p # p-value = 0.146, Tn =  52384.34
+fit.b2$Tn
+### Original Test(with m >= 5)
+fit.b3 <- bootstrap.test(data, times, approx = T, i_face = F, truncate.tn = 1)
+fit.b3$p # p-value = 0.123, Tn = 52384.34
+fit.b3$Tn
+### Direct Test(with m >= 5)
+fit.d1 <- direct.test(data, times)
+fit.d1$RLRT #RLRT = 2.8929, p-value = 0.0404
+
+
+# Log-transform stepface(with m >= 5)
+data <- data.frame(.value = log(value), .index = index, .id = id)
+### Ftest(optimal)(with m >= 5)
+fit.b4 <- bootstrap.test(data, times, approx = F, i_face = T, truncate.tn = 2)
+fit.b4$p # p-value = 0.158, Tn = 0.0785308
+fit.b4$Tn
+### Ftest(approx)(with m >= 5)
+fit.b5 <- bootstrap.test(data, times, approx = T, i_face = T, truncate.tn = 1)
+fit.b5$p # p-value = 0.163, Tn = 0.09779147
+fit.b5$Tn
+### Original Test(with m >= 5)
+fit.b6 <- bootstrap.test(data, times, approx = T, i_face = F, truncate.tn = 1)
+fit.b6$p # p-value = 0.15, Tn = 0.09779147
+fit.b6$Tn
+### Direct Test(with m >= 5)
+fit.d2 <- direct.test(data, times)
+fit.d2$RLRT #RLRT = 2.4082, p-value = 0.0593
