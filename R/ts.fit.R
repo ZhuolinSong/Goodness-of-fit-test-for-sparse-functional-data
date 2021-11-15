@@ -99,8 +99,8 @@ ts.fit <- function(data, times, H = 10, include.diag = F, m = 8e5) {
   # temp1 <- t(Bstar) %*% Bstar
   # Eigen1 <- eigen(temp1)
   # A1 <- Eigen1$vectors %*% sqrt(diag(Eigen1$values)) %*% t(Eigen1$vectors)
-  temp2 <- crossprod(BG)
-  Eigen2 <- eigen(temp2, symmetric = T)
+  BtB <- crossprod(BG)
+  Eigen2 <- eigen(BtB, symmetric = T)
   BtB.inv <- Matrix(Eigen2$vectors %*% tcrossprod(diag(1 / Eigen2$values), Eigen2$vectors))
   B.est <- tcrossprod(BtB.inv, BG)
   dense_times <- seq(min(times), max(times), length.out = m)
@@ -109,8 +109,9 @@ ts.fit <- function(data, times, H = 10, include.diag = F, m = 8e5) {
   Eigen1 <- eigen(Xstar, symmetric = T)
   Xstar.half <- Eigen1$vectors %*% diag(sqrt(Eigen1$values)) %*% t(Eigen1$vectors)
   Xstar.invhalf <- Eigen1$vectors %*% diag(1 / sqrt(Eigen1$values)) %*% t(Eigen1$vectors)
-  return(list(B = B, Bstar = Bstar,
+  return(list(B = BG, Bstar = Bstar,
             Xstar = Xstar, Xstar.half = Xstar.half, Xstar.invhalf = Xstar.invhalf,
             G = G, Time = Time, R = R,
-            BtB.inv = BtB.inv, B.est = B.est))
+            BtB.inv = BtB.inv, B.est = B.est,
+            BtB = BtB))
 }

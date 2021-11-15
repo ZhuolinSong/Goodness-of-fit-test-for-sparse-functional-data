@@ -56,7 +56,7 @@
 #' @references modified from bootstrap.test.R written by Stephanie
 
 bootstrap.test <- function(data, times, nbs = 1000, nb = 10,
-                           i_face = T, bs.mean = T, truncate.tn = 2, approx = F,...) {
+                           i_face = T, bs.mean = T, truncate.tn = 2, approx = F, ic = 0, ...) {
   mu <- calc.mean(data)
   data.demean <- data.frame(.value = data$.value - mu, .index = data$.index, .id = data$.id)
   fit.null <- fitNull(data.demean) # null fit
@@ -71,8 +71,8 @@ bootstrap.test <- function(data, times, nbs = 1000, nb = 10,
     C.alt <- trunc.mat.approx(b.fit, b.fit$R, nb, truncate.tn)
     Tn <- norm((C.alt - C.null) / length(times), type = "F")
   } else {
-    Theta.null <- trunc.mat.theta(b.fit, Rbar0.fit$Rbar0, nb, truncate.tn) # Smooth null cov
-    Theta.alt <- trunc.mat.theta(b.fit, b.fit$R, nb, truncate.tn) # Smooth alt cov
+    Theta.null <- trunc.mat.theta(b.fit, Rbar0.fit$Rbar0, nb, truncate.tn, ic) # Smooth null cov
+    Theta.alt <- trunc.mat.theta(b.fit, b.fit$R, nb, truncate.tn, ic) # Smooth alt cov
     DX <- (Theta.null - Theta.alt) %*% b.fit$Xstar
     Tn <- sqrt(sum(DX * t(DX)))
     C.alt <- as.matrix(tcrossprod(b.fit$Bstar %*% Matrix(Theta.alt), b.fit$Bstar))
@@ -130,7 +130,7 @@ bootstrap.test <- function(data, times, nbs = 1000, nb = 10,
       C.alt.bs <- trunc.mat.approx(b.fit, RbarA, nb, truncate.tn)
       Tn.bs <- norm((C.alt.bs - C.null.bs) / length(times), type = "F")
     } else {
-      Delta.bs <- trunc.mat(b.fit, Rbar0, RbarA, nb, truncate.tn) # slow here
+      Delta.bs <- trunc.mat(b.fit, Rbar0, RbarA, nb, truncate.tn, ic) # slow here
       DX.bs <- Delta.bs %*% b.fit$Xstar
       Tn.bs <- sqrt(sum(DX.bs * t(DX.bs)))
     }

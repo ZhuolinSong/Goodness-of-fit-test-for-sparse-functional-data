@@ -30,11 +30,21 @@ RNGkind("L'Ecuyer-CMRG")
 library(refund)
 
 # Type 1: Ftest(optimal)
-stephanie_type1(seed = 2021087, k = 1, n = 100, m = 7, L = 100,
+stephanie_type1(seed = 2021087, k = 1, n = 100, m = 7, L = 1000,
               mixed = T, err = 1, approx = F, i_face = T, truncate.tn = 2)
+# Type 1: Ftest(fixed_proximal) too slow
+# stephanie_type1(seed = 2021087, k = 1, n = 100, m = 7, L = 1,
+#              mixed = T, err = 1, approx = F, i_face = T, truncate.tn = 1, ic = 1)
+# Type 1: Ftest(accel_proximal)
+stephanie_type1(seed = 2021087, k = 1, n = 100, m = 7, L = 1000,
+              mixed = T, err = 1, approx = F, i_face = T, truncate.tn = 1, ic = 2)
+# Type 1: Ftest(accel_proximal_optimal)
+stephanie_type1(seed = 2021087, k = 1, n = 100, m = 7, L = 1000,
+              mixed = T, err = 1, approx = F, i_face = T, truncate.tn = 2, ic = 2)
 # Type 1: Ftest(approx)
 stephanie_type1(seed = 2021087, k = 1, n = 100, m = 7, L = 100,
               mixed = T, err = 1, approx = T, i_face = T, truncate.tn = 1)
+
 # Type 1: Original Test
 stephanie_type1(seed = 2021087, k = 1, n = 100, m = 7, L = 100,
               mixed = T, err = 1, approx = T, i_face = F, truncate.tn = 1)
@@ -53,11 +63,41 @@ stephanie_type2(seed = 2021087, k = 1, n = 100, m = 7,
               mixed = T, err = 4, i_face = T, truncate.tn = 1, approx = T)
 
 # Example 1. Simulated data from null model, with 100 subjects and 80 obs/subj
+devtools::load_all()
+library(refund)
 RNGkind("L'Ecuyer-CMRG", sample.kind = "Rej")
 set.seed(2021085)
 data <- gen.data(deviation = "trigonometric", nsubj = 100, r = 0, M = 7, mixed_m = F)
 times <- seq(-1, 1, length.out = 80) # all possible time points
 m_cov_truth <- 1 + tcrossprod(times) - 0.5 * times - tcrossprod(rep(0.5, 80), times)
+
+
+# test PGD
+nbs = 1000; nb = 10
+mu <- calc.mean(data)
+data.demean <- data.frame(.value = data$.value - mu, .index = data$.index, .id = data$.id)
+fit.null <- fitNull(data.demean) # null fit
+if ("try-error" %in% class(fit.null)) { # issue with null fit
+  stop(fit.null)
+}
+b.fit <- ts.fit(data.demean, times = times, H = nb)
+Rbar0.fit <- calc.R0(fit.null, b.fit$Time)
+
+# nulls
+Theta_nul_ap <- trunc.mat.theta(b.fit, Rbar0.fit$Rbar0, nb, 0)
+norm(as.matrix(tcrossprod(b.fit$Bstar %*% Matrix(Theta_nul_ap), b.fit$Bstar)) - m_cov_truth, type = "F")
+Theta_nul_pg <- fixed_PG(b.fit, Rbar0.fit$Rbar0, nb, alpha = vech(Theta_nul_ap), max_iter = 1e3)
+norm(as.matrix(tcrossprod(b.fit$Bstar %*% Matrix(Theta_nul_pg), b.fit$Bstar)) - m_cov_truth, type = "F")
+Theta_nul_ag <- A_PG(b.fit, Rbar0.fit$Rbar0, nb, alpha = vech(Theta_nul_ap), max_iter = 1e3)
+norm(as.matrix(tcrossprod(b.fit$Bstar %*% Matrix(Theta_nul_ag), b.fit$Bstar)) - m_cov_truth, type = "F")
+
+# alternative
+Theta_alt_ap <- trunc.mat.theta(b.fit, b.fit$R, nb, 0)
+norm(as.matrix(tcrossprod(b.fit$Bstar %*% Matrix(Theta_alt_ap), b.fit$Bstar)) - m_cov_truth, type = "F")
+Theta_alt_pg <- fixed_PG(b.fit, b.fit$R, nb, alpha = vech(Theta_alt_ap), max_iter = 1e3, truncate.tn = 1)
+norm(as.matrix(tcrossprod(b.fit$Bstar %*% Matrix(Theta_alt_pg), b.fit$Bstar)) - m_cov_truth, type = "F")
+Theta_alt_ag <- A_PG(b.fit, b.fit$R, nb, alpha = vech(Theta_alt_ap), max_iter = 1e3, truncate.tn = 1)
+norm(as.matrix(tcrossprod(b.fit$Bstar %*% Matrix(Theta_alt_ag), b.fit$Bstar)) - m_cov_truth, type = "F")
 
 
 # Implement the tests
