@@ -1,0 +1,137 @@
+---
+Title: "Presentation: type_2 error"
+author: ""
+date: ""
+---
+
+```{r, include=F}
+m_size <- matrix(NA, nrow = 2, ncol = 4)
+m_code <- matrix(NA, nrow = 2, ncol = 4)
+m_plain <- matrix(NA, nrow = 2, ncol = 4)
+```
+```{r, quad_1004, include=F}
+# load("steface_quad_1004.RData") # simulation/approx_type2/
+# for (i in 1:4) {
+#     m_size[1, i] <- steface_quad_1004[[i]][[1]]
+# }
+load("code_quad_1004.RData")
+for (i in 1:4) {
+    m_code[1, i] <- code_quad_1004[[i]][[1]]
+}
+# load("plain_quad_1004.RData")
+# for (i in 1:4) {
+#     m_plain[1, i] <- plain_quad_1004[[i]][[1]]
+# }
+```
+```{r, quad_1007, include=F}
+# load("steface_quad_1007.RData") # simulation/approx_type2/
+# for (i in 1:4) {
+#     m_size[2, i] <- steface_quad_1007[[i]][[1]]
+# }
+load("code_quad_1007.RData")
+for (i in 1:4) {
+    m_code[2, i] <- code_quad_1007[[i]][[1]]
+}
+# load("plain_quad_1007.RData")
+# for (i in 1:4) {
+#     m_plain[2, i] <- plain_quad_1007[[i]][[1]]
+# }
+```
+```{r, summary quad_100}
+print("summary for quad 100")
+m_size
+m_code
+m_plain
+```
+```{r,  plot quad_100}
+# pdf(file = "new_quad_100.pdf")
+
+par(mfrow = c(1, 1))
+v_dev <- seq(0, 1, length.out = 5)
+plot(v_dev, c(0.0524, m_size[1, ]),
+    ylim = c(0, 1),
+    type = "l", lty = 2, col = 1, lwd = 2,
+    main = "Power under Quadratic Deviations", xlab = "Deviatin from Null", ylab = "Power, Quadratic Dev."
+)
+lines(v_dev, c(0.0444, m_size[2, ]), ylim = c(0, 1), lty = 1, col = 1, lwd = 2)
+lines(v_dev, c(0.0510, m_code[1, ]), ylim = c(0, 1), lty = 2, col = "red", lwd = 2)
+lines(v_dev, c(0.0472, m_code[2, ]), ylim = c(0, 1), lty = 1, col = "red", lwd = 2)
+lines(v_dev, c(0.1074, m_plain[1, ]), ylim = c(0, 1), lty = 2, col = "blue", lwd = 2)
+lines(v_dev, c(0.0752, m_plain[2, ]), ylim = c(0, 1), lty = 1, col = "blue", lwd = 2)
+legend("bottomright",
+    legend = c("Sparse test(t=80), m = 7", "Sparse test(optimal), m = 7", "Original test, m = 7", "Sparse test(t=80), m = 4", "Sparse test(optimal), m = 4", "Original test, m = 4"),
+    col = rep(c("red", "black", "blue"), 2), lty = rep(1:2, each = 3), lwd = rep(2, 6)
+)
+
+abline(h = 1, lty = "dotted", col = "red")
+abline(h = 0.05, lty = "dotted", col = "red")
+#dev.off()
+```
+
+
+
+```{r, include=F}
+m_size <- matrix(NA, nrow = 2, ncol = 4)
+m_code <- matrix(NA, nrow = 2, ncol = 4)
+m_plain <- matrix(NA, nrow = 2, ncol = 4)
+```
+```{r, trig_1004, include=F}
+# load("steface_trig_1004.RData") # simulation/rmd/
+# for (i in 1:4) {
+#     m_size[1, i] <- steface_trig_1004[[i]][[1]]
+# }
+load("code_trig_1004.RData")
+for (i in 1:4) {
+    m_code[1, i] <- code_trig_1004[[i]][[1]]
+}
+# load("plain_trig_1004.RData")
+# for (i in 1:4) {
+#     m_plain[1, i] <- plain_trig_1004[[i]][[1]]
+# }
+```
+```{r, trig_1007, include=F}
+# load("steface_trig_1007.RData") # simulation/rmd/
+# for (i in 1:4) {
+#     m_size[2, i] <- steface_trig_1007[[i]][[1]]
+# }
+load("code_trig_1007.RData")
+for (i in 1:4) {
+    m_code[2, i] <- code_trig_1007[[i]][[1]]
+}
+# load("plain_trig_1007.RData")
+# for (i in 1:4) {
+#     m_plain[2, i] <- plain_trig_1007[[i]][[1]]
+# }
+```
+```{r, summary trig_100}
+print("summary for steface_trig")
+m_size
+m_code
+m_plain
+```
+```{r,  plot trig_100}
+# pdf(file = "new_trig_100.pdf")
+
+par(mfrow = c(1, 1))
+v_dev <- seq(0, 1, length.out = 5)
+plot(v_dev, c(0.0524, m_size[1, ]),
+    ylim = c(0, 1),
+    type = "l", lty = 2, col = 1, lwd = 2,
+    main = "Power under Trigonometric Deviations", xlab = "Deviatin from Null", ylab = "Power, Trigonometric Dev."
+)
+lines(v_dev, c(0.0444, m_size[2, ]), ylim = c(0, 1), lty = 1, col = 1, lwd = 2)
+lines(v_dev, c(0.0510, m_code[1, ]), ylim = c(0, 1), lty = 2, col = "red", lwd = 2)
+lines(v_dev, c(0.0472, m_code[2, ]), ylim = c(0, 1), lty = 1, col = "red", lwd = 2)
+lines(v_dev, c(0.1074, m_plain[1, ]), ylim = c(0, 1), lty = 2, col = "blue", lwd = 2)
+lines(v_dev, c(0.0752, m_plain[2, ]), ylim = c(0, 1), lty = 1, col = "blue", lwd = 2)
+legend("bottomright",
+    legend = c("Sparse test(t=80), m = 7", "Sparse test(optimal), m = 7", "Original test, m = 7", "Sparse test(t=80), m = 4", "Sparse test(optimal), m = 4", "Original test, m = 4"),
+    col = rep(c("red", "black", "blue"), 2), lty = rep(1:2, each = 3), lwd = rep(2, 6)
+)
+
+abline(h = 1, lty = "dotted", col = "red")
+abline(h = 0.05, lty = "dotted", col = "red")
+
+dev.off()
+```
+

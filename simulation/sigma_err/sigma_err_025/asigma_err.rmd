@@ -1,0 +1,202 @@
+---
+Title: "Presentation: sigma error"
+author: ""
+date: ""
+---
+
+```{r, include=F}
+m_mean <- matrix(0, nrow = 2, ncol = 2)
+m_mse <- matrix(0, nrow = 2, ncol = 2)
+m_sd <- matrix(0, nrow = 2, ncol = 2)
+```
+
+```{r, 100.bs, eval = T, include=F}
+load("face_1004.RData") # simulation/approx_1/
+face_1004 <- c(face_1004[[1]][[2]], face_1004[[2]][[2]])
+
+load("face_1007.RData") # simulation/approx_1/
+face_1007 <- c(face_1007[[1]][[2]], face_1007[[2]][[2]])
+
+load("orig_1004.RData") # simulation/approx_1/
+orig_1004 <- c(orig_1004[[1]][[2]], orig_1004[[2]][[2]])
+
+load("orig_1007.RData") # simulation/approx_1/
+orig_1007 <- c(orig_1007[[1]][[2]], orig_1007[[2]][[2]])
+
+```
+
+```{r, 1004, include = T}
+m_mean[1, 1] <- mean(orig_1004)
+m_mse[1, 1] <- mean((orig_1004 - 0.25))
+m_sd[1, 1] <- sd(orig_1004)
+
+m_mean[1, 2] <- mean(face_1004)
+m_mse[1, 2] <- mean((face_1004 - 0.25))
+m_sd[1, 2] <- sd(face_1004)
+hist(face_1004, col=rgb(1,0,0,0.5),xlim=c(-0.01, 0.75), ylim=c(0, 6), main='Overlapping Histogram', freq = F)
+hist(orig_1004, col=rgb(0,0,1,0.5), add=T, freq = F)
+
+plot(density(face_1004), xlim = c(-0.01 , 0.75), ylim=c(0, 6), col=rgb(1,0,0,0.5), main='n = 100, m = 4')
+lines(density(orig_1004), col=rgb(0,0,1,0.5))
+```
+```{r, 1007, include = T}
+m_mean[2, 1] <- mean(orig_1007)
+m_mse[2, 1] <- mean((orig_1007 - 0.25))
+m_sd[2, 1] <- sd(orig_1007)
+
+m_mean[2, 2] <- mean(face_1007)
+m_mse[2, 2] <- mean((face_1007 - 0.25))
+m_sd[2, 2] <- sd(face_1007)
+hist(face_1007, col=rgb(1,0,0,0.5),xlim=c(0,0.5), ylim=c(0, 12), main='Overlapping Histogram', freq = F)
+hist(orig_1007, col=rgb(0,0,1,0.5), add=T, freq = F)
+plot(density(face_1007), xlim = c(0, 0.5),  ylim=c(0, 12),col=rgb(1,0,0,0.5), main='n = 100, m = 7')
+lines(density(orig_1007), col=rgb(0,0,1,0.5))
+```
+```{r, summary code_100}
+print("summary for 100")
+m_mean
+m_mse
+m_sd
+```
+
+
+```{r, include=F}
+m_mean <- matrix(0, nrow = 2, ncol = 2)
+m_sd <- matrix(0, nrow = 2, ncol = 2)
+m_mse <- matrix(0, nrow = 2, ncol = 2)
+```
+
+```{r, face_5004.bs, eval = F, include = F}
+load("simulation/sigma_err/sigma_err_025/face_5004_1.RData") # simulation/sigma_err/sigma_err_025
+load("simulation/sigma_err/sigma_err_025/face_5004_2.RData")
+load("simulation/sigma_err/sigma_err_025/face_5004_3.RData")
+load("simulation/sigma_err/sigma_err_025/face_5004_4.RData")
+load("simulation/sigma_err/sigma_err_025/face_5004_5.RData")
+face_5004.bs <- c(face_5004_1, face_5004_2, face_5004_3, face_5004_4, face_5004_5)
+face_5004 <- c()
+for (i in seq_along(face_5004.bs)) {
+    face_5004 <- c(face_5004, face_5004.bs[[i]][[2]])
+}
+
+save(face_5004, file = "face_5004.RData")
+```
+```{r, face_5007.bs, eval = F, include = F}
+load("simulation/sigma_err/sigma_err_025/face_5007_1.RData") # simulation/approx_1/
+load("simulation/sigma_err/sigma_err_025/face_5007_2.RData")
+load("simulation/sigma_err/sigma_err_025/face_5007_3.RData")
+load("simulation/sigma_err/sigma_err_025/face_5007_4.RData")
+load("simulation/sigma_err/sigma_err_025/face_5007_5.RData")
+face_5007.bs <- c(face_5007_1, face_5007_2, face_5007_3, face_5007_4, face_5007_5)
+face_5007 <- c()
+for (i in seq_along(face_5007.bs)) {
+    face_5007 <- c(face_5007, face_5007.bs[[i]][[2]])
+}
+
+save(face_5007, file = "face_5007.RData")
+```
+
+```{r, orig_5004.bs, eval = F, include = F}
+load("simulation/sigma_err/sigma_err_025/orig_5004_1.RData") # simulation/approx_1/
+load("simulation/sigma_err/sigma_err_025/orig_5004_2.RData")
+load("simulation/sigma_err/sigma_err_025/orig_5004_3.RData")
+load("simulation/sigma_err/sigma_err_025/orig_5004_4.RData")
+load("simulation/sigma_err/sigma_err_025/orig_5004_5.RData")
+orig_5004.bs <- c(orig_5004_1, orig_5004_2, orig_5004_3, orig_5004_4, orig_5004_5)
+orig_5004 <- c()
+for (i in seq_along(orig_5004.bs)) {
+    orig_5004 <- c(orig_5004, orig_5004.bs[[i]][[2]])
+}
+
+save(orig_5004, file = "orig_5004.RData")
+```
+```{r, orig_5007.bs, eval = F, include = F}
+load("simulation/sigma_err/sigma_err_025/orig_5007_1.RData") # simulation/approx_1/
+load("simulation/sigma_err/sigma_err_025/orig_5007_2.RData")
+load("simulation/sigma_err/sigma_err_025/orig_5007_3.RData")
+load("simulation/sigma_err/sigma_err_025/orig_5007_4.RData")
+load("simulation/sigma_err/sigma_err_025/orig_5007_5.RData")
+orig_5007.bs <- c(orig_5007_1, orig_5007_2, orig_5007_3, orig_5007_4, orig_5007_5)
+orig_5007 <- c()
+for (i in seq_along(orig_5007.bs)) {
+    orig_5007 <- c(orig_5007, orig_5007.bs[[i]][[2]])
+}
+
+save(orig_5007, file = "orig_5007.RData")
+```
+```{r, orig_5004, include = T}
+load("orig_5004.RData")
+m_mean[1, 1] <- mean(orig_5004)
+m_sd[1, 1] <- sd(orig_5004)
+m_mse[1, 1] <- mean((orig_5004 - 0.25))
+load("face_5004.RData")
+m_mean[1, 2] <- mean(face_5004)
+m_mse[1, 2] <- mean((face_5004 - 0.25))
+m_sd[1, 2] <- sd(face_5004)
+hist(face_5004, col=rgb(1,0,0,0.5),xlim=c(0,0.45), ylim=c(0, 12), main='Overlapping Histogram', freq = F)
+hist(orig_5004, col=rgb(0,0,1,0.5), add=T, freq = F)
+
+plot(density(face_5004), xlim = c(0, 0.45), ylim=c(0, 12) , col=rgb(1,0,0,0.5), main='n = 500, m = 4')
+lines(density(orig_5004), col=rgb(0,0,1,0.5))
+```
+```{r, orig_5007, include = T}
+load("orig_5007.RData")
+m_mean[2, 1] <- mean(orig_5007)
+m_sd[2, 1] <- sd(orig_5007)
+m_mse[2, 1] <- mean((orig_5007 - 0.25))
+load("face_5007.RData")
+m_mean[2, 2] <- mean(face_5007)
+m_mse[2, 2] <- mean((face_5007 - 0.25))
+m_sd[2, 2] <- sd(face_5007)
+hist(face_5007, col=rgb(1,0,0,0.5),xlim=c(0,0.45), main='Overlapping Histogram', freq = F)
+hist(orig_5007, col=rgb(0,0,1,0.5), add=T, freq = F)
+plot(density(face_5007), xlim = c(0, 0.45), col=rgb(1,0,0,0.5), main='n = 500, m = 7')
+lines(density(orig_5007), col=rgb(0,0,1,0.5))
+```
+```{r, summary code_500}
+print("summary for 500")
+m_mean
+m_mse
+m_sd
+```
+
+```{r plot}
+
+pdf(file = "err_histogram_025.pdf", height = 4, width = 16)
+par(mfrow = c(1, 4))
+hist(face_1004, col=rgb(1,0,0,0.5),xlim=c(0,0.6), ylim=c(0, 12), main=expression(paste(n == 100, ", ", bar(m) == 4)), freq = F, xlab = '', ylab = '')
+hist(orig_1004, col=rgb(0,0,1,0.5), add=T, freq = F, xlab = '', ylab = '')
+abline(v = 0.25, lwd = 3)
+
+hist(face_1007, col=rgb(1,0,0,0.5),xlim=c(0,0.6), ylim=c(0, 12), main=expression(paste(n == 100, ", ", bar(m) == 7)), freq = F, xlab = '', ylab = '')
+hist(orig_1007, col=rgb(0,0,1,0.5), add=T, freq = F, xlab = '', ylab = '')
+abline(v = 0.25, lwd = 3)
+
+hist(face_5004, col=rgb(1,0,0,0.5),xlim=c(0,0.6), ylim=c(0, 12), main=expression(paste(n == 500, ", ", bar(m) == 4)), freq = F, xlab = '', ylab = '')
+hist(orig_5004, col=rgb(0,0,1,0.5), add=T, freq = F, xlab = '', ylab = '')
+abline(v = 0.25, lwd = 3)
+
+hist(face_5007, col=rgb(1,0,0,0.5),xlim=c(0,0.6), ylim=c(0, 12), main=expression(paste(n == 500, ", ", bar(m) == 7)), freq = F, xlab = '', ylab = '')
+hist(orig_5007, col=rgb(0,0,1,0.5), add=T, freq = F, xlab = '', ylab = '')
+abline(v = 0.25, lwd = 3)
+
+pdf(file = "err_density.pdf")
+par(mfrow = c(2, 2))
+plot(density(face_1004), xlim = c(0,0.6), col=rgb(1,0,0,0.5), main='n = 100, m = 4')
+lines(density(orig_1004), col=rgb(0,0,1,0.5))
+abline(v = 0.25, lwd = 3)
+
+plot(density(face_1007), xlim = c(0, 0.5), ylim=c(0, 10), col=rgb(1,0,0,0.5), main='n = 100, m = 7')
+lines(density(orig_1007), col=rgb(0,0,1,0.5))
+abline(v = 0.25, lwd = 3)
+
+plot(density(face_5004), xlim = c(0, 0.4), ylim=c(0, 12), col=rgb(1,0,0,0.5), main='n = 500, m = 4')
+lines(density(orig_5004), col=rgb(0,0,1,0.5))
+abline(v = 0.25, lwd = 3)
+
+plot(density(face_5007), xlim = c(0, 0.45), col=rgb(1,0,0,0.5), main='n = 500, m = 7')
+lines(density(orig_5007), col=rgb(0,0,1,0.5))
+abline(v = 0.25, lwd = 3)
+
+dev.off()
+```
+

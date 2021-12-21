@@ -1,0 +1,96 @@
+---
+Title: "Presentation: type_1 error"
+author: ""
+date: ""
+---
+
+```{r, include=F}
+m_size <- matrix(NA, nrow = 2, ncol = 2)
+m_sigma2_mse <- matrix(NA, nrow = 2, ncol = 1)
+m_time <- matrix(NA, nrow = 2, ncol = 3)
+```
+
+```{r, steface_1004, include=F}
+load("steface_1004.RData") # simulation/steface_1/
+m_size[1, ] <- (steface_1004[[1]][[1]] + steface_1004[[2]][[1]]) / 2
+m_sigma2_mse[1, ] <- (steface_1004[[1]][[2]] + steface_1004[[2]][[2]]) / 2
+m_time[1, ] <- (steface_1004[[1]][[3]] + steface_1004[[2]][[3]]) / 2
+```
+
+```{r, steface_1007, include=F}
+load("steface_1007.RData") # simulation/steface_1/
+m_size[2, ] <- (steface_1007[[1]][[1]] + steface_1007[[2]][[1]]) / 2
+m_sigma2_mse[2, ] <- (steface_1007[[1]][[2]] + steface_1007[[2]][[2]]) / 2
+m_time[2, ] <- (steface_1007[[1]][[3]] + steface_1007[[2]][[3]]) / 2
+```
+```{r, summary steface_100 nt}
+print("summary for 100 no trunct step face")
+m_size
+m_sigma2_mse
+m_time
+```
+
+```{r, include=F}
+m_size <- matrix(0, nrow = 2, ncol = 2)
+m_sigma2_mse <- matrix(0, nrow = 2, ncol = 1)
+m_time <- matrix(0, nrow = 2, ncol = 3)
+```
+
+```{r, steface_5004.bs, eval = F, include = F}
+load("simulation/steface_1/steface_5004_1.RData") # simulation/steface_1/
+load("simulation/steface_1/steface_5004_2.RData")
+load("simulation/steface_1/steface_5004_3.RData")
+load("simulation/steface_1/steface_5004_4.RData")
+load("simulation/steface_1/steface_5004_5.RData")
+steface_5004 <- c(steface_5004_1, steface_5004_2, steface_5004_3, steface_5004_4, steface_5004_5)
+for (i in seq_along(steface_5004)) {
+    m_size[1, ] <- m_size[1, ] + steface_5004[[i]][[1]]
+    m_sigma2_mse[1, ] <- m_sigma2_mse[1, ] + steface_5004[[i]][[2]]
+    m_time[1, ] <- m_time[1, ] + steface_5004[[i]][[3]]
+}
+
+steface_5004 <- list(
+    m_size[1, ],
+    m_sigma2_mse[1, ],
+    m_time[1, ]
+)
+save(steface_5004, file = "steface_5004.RData")
+```
+```{r, steface_5007.bs, eval = F, include = F}
+load("simulation/steface_1/steface_5007_1.RData") # simulation/steface_1/
+load("simulation/steface_1/steface_5007_2.RData")
+load("simulation/steface_1/steface_5007_3.RData")
+load("simulation/steface_1/steface_5007_4.RData")
+load("simulation/steface_1/steface_5007_5.RData")
+steface_5007 <- c(steface_5007_1, steface_5007_2, steface_5007_3, steface_5007_4, steface_5007_5)
+for (i in seq_along(steface_5007)) {
+    m_size[2, ] <- m_size[2, ] + steface_5007[[i]][[1]]
+    m_sigma2_mse[2, ] <- m_sigma2_mse[2, ] + steface_5007[[i]][[2]]
+    m_time[2, ] <- m_time[2, ] + steface_5007[[i]][[3]]
+}
+
+steface_5007 <- list(
+    m_size[2, ],
+    m_sigma2_mse[2, ],
+    m_time[2, ]
+)
+save(steface_5007, file = "steface_5007.RData")
+```
+```{r, steface_5004, include = F}
+load("steface_5004.RData")
+m_size[1, ] <- steface_5004[[1]] / 10
+m_sigma2_mse[1, ] <- steface_5004[[2]] / 10
+m_time[1, ] <- steface_5004[[3]] / 10
+```
+```{r, steface_5007, include = F}
+load("steface_5007.RData")
+m_size[2, ] <- steface_5007[[1]] / 10
+m_sigma2_mse[2, ] <- steface_5007[[2]] / 10
+m_time[2, ] <- steface_5007[[3]] / 10
+```
+```{r, summary steface_500}
+print("summary for 500 steface")
+m_size
+m_sigma2_mse
+m_time
+```

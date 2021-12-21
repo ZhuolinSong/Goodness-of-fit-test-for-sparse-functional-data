@@ -29,6 +29,18 @@ devtools::load_all()
 RNGkind("L'Ecuyer-CMRG")
 library(refund)
 
+# direct test(type 1)
+sim_direct(seed = 2021087, k = 10, n = 100, m = 7, dev = "trigonometric", r = 0,
+                mixed = T, err = 1)
+
+# (power)
+sim_direct(seed = 2021087, k = 10, n = 100, m = 7, dev = "quadratic", r = 0.5,
+                mixed = T, err = 1)
+
+# test sigma_error
+sigma_error(seed = 2021087, k = 10, n = 100, m = 7, mixed = T, err = 1,
+            approx = F, i_face = T, truncate.tn = 2)
+
 # Type 1: Ftest(optimal)
 stephanie_type1(seed = 2021087, k = 1, n = 100, m = 7, L = 1000,
               mixed = T, err = 1, approx = F, i_face = T, truncate.tn = 2)
@@ -42,11 +54,11 @@ stephanie_type1(seed = 2021087, k = 1, n = 100, m = 7, L = 1000,
 stephanie_type1(seed = 2021087, k = 1, n = 100, m = 7, L = 1000,
               mixed = T, err = 1, approx = F, i_face = T, truncate.tn = 2, ic = 2)
 # Type 1: Ftest(approx)
-stephanie_type1(seed = 2021087, k = 1, n = 100, m = 7, L = 100,
+stephanie_type1(seed = 2021087, k = 1, n = 100, m = 7, L = 1000,
               mixed = T, err = 1, approx = T, i_face = T, truncate.tn = 1)
 
 # Type 1: Original Test
-stephanie_type1(seed = 2021087, k = 1, n = 100, m = 7, L = 100,
+stephanie_type1(seed = 2021087, k = 1, n = 100, m = 7, L = 1000,
               mixed = T, err = 1, approx = T, i_face = F, truncate.tn = 1)
 
 # Type 2: Ftest(optimal)
@@ -54,8 +66,8 @@ stephanie_type2(seed = 2021087, k = 1, n = 100, m = 7,
               dev = "trigonometric", r = r_grid_quad[2], L = 10,
               mixed = T, err = 4, i_face = T, truncate.tn = 2, approx = F)
 # Type 2: Ftest(approx)
-stephanie_type2(seed = 2021087, k = 1, n = 100, m = 7,
-              dev = "trigonometric", r = r_grid_quad[2], L = 10,
+stephanie_type2(seed = 2021087, k = 1, n = 500, m = 7,
+              dev = "trigonometric", r = r_grid_quad_500[2], L = 10,
               mixed = T, err = 4, i_face = T, truncate.tn = 1, approx = T)
 # Type 2: Original Test
 stephanie_type2(seed = 2021087, k = 1, n = 100, m = 7,
@@ -70,6 +82,12 @@ set.seed(2021085)
 data <- gen.data(deviation = "trigonometric", nsubj = 100, r = 0, M = 7, mixed_m = F)
 times <- seq(-1, 1, length.out = 80) # all possible time points
 m_cov_truth <- 1 + tcrossprod(times) - 0.5 * times - tcrossprod(rep(0.5, 80), times)
+
+set.seed(2021085)
+system.time(fit.b <- bootstrap.test(data, times, nbs = 10, nb = 10,
+                      i_face = T, bs.mean = T, truncate.tn = 1, approx = T))
+
+fit.b$bs.approx
 
 
 # test PGD
@@ -186,6 +204,7 @@ for (i in seq_len(nrow(cd4))) {
     new.subj <- new.subj + 1
   }
 }
+length(unique(data$.index))
 mean(count) #5.16
 min(count) #1
 max(count) #11
@@ -297,3 +316,136 @@ fit.b6$Tn
 ### Direct Test(with m >= 5)
 fit.d2 <- direct.test(data, times)
 fit.d2$RLRT #RLRT = 2.4082, p-value = 0.0593
+
+
+#ADNI
+times <- round(seq(-1, 1, length.out = 81), digits = 3)
+load("data/ADNI.RData")
+## ADAS_fd
+str(ADAS_fd)
+min(ADAS_fd["argvals"])
+data <- data.frame(.value = ADAS_fd$y, .index = ADAS_fd$argvals*2 - 1, .id = ADAS_fd$subj)
+str(data)
+length(unique(ADAS_fd$argvals))
+match(data$.index, times)
+count <- NULL
+for (i in seq_len(nrow(ADAS_fd))) {
+
+  subj.count <- length(subj.idx)
+  count <- c(count, subj.count)
+}
+mean(count)
+
+### Ftest(optimal)(with m >= 5)
+fit.b1 <- bootstrap.test(data, times, approx = F, i_face = T, truncate.tn = 2)
+fit.b1$p # p-value = 0.909, Tn = 3265967
+fit.b1$Tn
+### Ftest(approx)(with m >= 5)
+fit.b2 <- bootstrap.test(data, times, approx = T, i_face = T, truncate.tn = 1)
+fit.b2$p # p-value = 0.917, Tn = 3475345
+fit.b2$Tn
+### Original Test(with m >= 5)
+fit.b3 <- bootstrap.test(data, times, approx = T, i_face = F, truncate.tn = 1)
+fit.b3$p # p-value = 0.643, Tn = 3519918
+fit.b3$Tn
+### Direct Test(with m >= 5)
+fit.d4 <- direct.test(data, times)
+fit.d4$RLRT #p-value = 1, RLRT = 0
+
+##RAVLT.imme_fd
+str(RAVLT.imme_fd)
+min(RAVLT.imme_fd["argvals"])
+max(RAVLT.imme_fd["argvals"])
+data <- data.frame(.value = RAVLT.imme_fd$y, .index = RAVLT.imme_fd$argvals*2 - 1, .id = RAVLT.imme_fd$subj)
+match(data$.index, times)
+
+### Ftest(optimal)(with m >= 5)
+fit.b5 <- bootstrap.test(data, times, approx = F, i_face = T, truncate.tn = 2)
+fit.b5$p # p-value = 0.082, Tn = 512130420
+fit.b5$Tn
+### Ftest(approx)(with m >= 5)
+fit.b6 <- bootstrap.test(data, times, approx = T, i_face = T, truncate.tn = 1)
+fit.b6$p # p-value = 0.062, Tn = 680812477
+fit.b6$Tn
+### Original Test(with m >= 5)
+fit.b7 <- bootstrap.test(data, times, approx = T, i_face = F, truncate.tn = 1)
+fit.b7$p # p-value = 0.004, Tn = 680812477
+fit.b7$Tn
+### Direct Test(with m >= 5)
+fit.d8 <- direct.test(data, times)
+fit.d8$RLRT #p-value = 1, RLRT = 0
+##Observed RLRT statistic is 0, no simulation performed.
+##Warning message:
+##In model.matrix.default(~m$groups[[n.levels - i + 1]] - 1, contrasts.arg = c("contr.treatment",  :
+##  non-list contrasts argument ignored
+##
+##RAVLT.learn_fd
+str(RAVLT.learn_fd)
+min(RAVLT.learn_fd["argvals"])
+max(RAVLT.learn_fd["argvals"])
+data <- data.frame(.value = RAVLT.learn_fd$y, .index = RAVLT.learn_fd$argvals*2 - 1, .id = RAVLT.learn_fd$subj)
+match(data$.index, times)
+
+### Ftest(optimal)(with m >= 5)
+fit.b9 <- bootstrap.test(data, times, approx = F, i_face = T, truncate.tn = 2)
+fit.b9$p # p-value = 0.74, Tn = 535675.9
+fit.b9$Tn
+### Ftest(approx)(with m >= 5)
+fit.b10 <- bootstrap.test(data, times, approx = T, i_face = T, truncate.tn = 1)
+fit.b10$p # p-value = 0.755, Tn = 570370.6
+fit.b10$Tn
+### Original Test(with m >= 5)
+fit.b11 <- bootstrap.test(data, times, approx = T, i_face = F, truncate.tn = 1)
+fit.b11$p # p-value = 0.323, Tn = 570370.6
+fit.b11$Tn
+### Direct Test(with m >= 5)
+fit.d12 <- direct.test(data, times)
+fit.d12$RLRT #p-value = , RLRT = 
+
+##FAQ_fd
+str(FAQ_fd)
+min(FAQ_fd["argvals"])
+max(FAQ_fd["argvals"])
+data <- data.frame(.value = FAQ_fd$y, .index = FAQ_fd$argvals*2 - 1, .id = FAQ_fd$subj)
+match(data$.index, times)
+
+### Ftest(optimal)(with m >= 5)
+fit.b13 <- bootstrap.test(data, times, approx = F, i_face = T, truncate.tn = 2)
+fit.b13$p # p-value = 0.453, RLRT = 26792298
+
+fit.b13$Tn
+### Ftest(approx)(with m >= 5)
+fit.b14 <- bootstrap.test(data, times, approx = T, i_face = T, truncate.tn = 1)
+fit.b14$p # p-value = 0.438, RLRT = 35521574
+fit.b14$Tn
+### Original Test(with m >= 5)
+fit.b15 <- bootstrap.test(data, times, approx = T, i_face = F, truncate.tn = 1)
+fit.b15$p # p-value = 0.254, RLRT = 35521574
+fit.b15$Tn
+### Direct Test(with m >= 5)
+fit.d16 <- direct.test(data, times)
+fit.d16$RLRT # p-value = , RLRT = 
+
+
+##MMSE_fd
+str(MMSE_fd)
+min(MMSE_fd["argvals"])
+max(MMSE_fd["argvals"])
+data <- data.frame(.value = MMSE_fd$y, .index = MMSE_fd$argvals*2 - 1, .id = MMSE_fd$subj)
+match(data$.index, times)
+
+### Ftest(optimal)(with m >= 5)
+fit.b17 <- bootstrap.test(data, times, approx = F, i_face = T, truncate.tn = 2)
+fit.b17$p # p-value = 0.384, RLRT = 9295114
+fit.b17$Tn
+### Ftest(approx)(with m >= 5)
+fit.b18 <- bootstrap.test(data, times, approx = T, i_face = T, truncate.tn = 1)
+fit.b18$p # p-value = 0.398, RLRT = 12368271
+fit.b18$Tn
+### Original Test(with m >= 5)
+fit.b19 <- bootstrap.test(data, times, approx = T, i_face = F, truncate.tn = 1)
+fit.b19$p # p-value = 0.143, RLRT = 12368271
+fit.b19$Tn
+### Direct Test(with m >= 5)
+fit.d20 <- direct.test(data, times)
+fit.d20$RLRT # p-value = , RLRT = 

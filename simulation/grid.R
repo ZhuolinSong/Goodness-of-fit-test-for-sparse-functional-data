@@ -7,7 +7,7 @@ f_devnull <- function(r, deviation = "trigonometric", n = 5e5) {
     mean(var_z / (1 + grid^2 + var_z))
 }
 
-# dev_grid <- seq(0, 1 - 1e-2, length.out = 10)
+# dev_grid <- seq(0, 1 - 1e-2, length.out = 5)
 # r_grid_quad <- sapply(dev_grid, function(t) {
 #                 uniroot(function(x) f_devnull(x, "quadratic") - t,
 #                 c(0, 1e5))$root})
@@ -15,7 +15,15 @@ f_devnull <- function(r, deviation = "trigonometric", n = 5e5) {
 #                 uniroot(function(x) f_devnull(x) - t,
 #                 c(0, 1e5))$root})
 #
-# save(r_grid_quad, r_grid_trig, file = "grid.RData")
+# dev_grid <- seq(0, 0.6, length.out = 5)
+# r_grid_quad_500 <- sapply(dev_grid, function(t) {
+#                 uniroot(function(x) f_devnull(x, "quadratic") - t,
+#                 c(0, 1e5))$root})
+# r_grid_trig_500 <- sapply(dev_grid, function(t) {
+#                 uniroot(function(x) f_devnull(x) - t,
+#                 c(0, 1e5))$root})
+#
+# save(r_grid_quad, r_grid_trig, r_grid_quad_500, r_grid_trig_500 file = "grid.RData")
 # 
 # r_grid_quad <- c(0.000000, 2.082020, 5.232181, 19.514433, 12338.236991)
 # # r_grid_quad <- c(0, 1.113279, 1.870488, 2.821660, 4.221890, 6.595471,
