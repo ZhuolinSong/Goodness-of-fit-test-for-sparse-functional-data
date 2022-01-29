@@ -11,10 +11,10 @@ m_plain <- matrix(NA, nrow = 2, ncol = 4)
 ```
 
 ```{r, code_5004_quad.bs, eval = F, include = F}
-load("simulation/approx/approx_type2_025/another/an_code_quad_5004_2.RData")
-load("simulation/approx/approx_type2_025/another/an_code_quad_5004_3.RData")
-load("simulation/approx/approx_type2_025/another/an_code_quad_5004_4.RData")
-load("simulation/approx/approx_type2_025/another/an_code_quad_5004_5.RData")
+load("simulation/approx/approx_type2_4/another/an_code_quad_5004_2.RData")
+load("simulation/approx/approx_type2_4/another/an_code_quad_5004_3.RData")
+load("simulation/approx/approx_type2_4/another/an_code_quad_5004_4.RData")
+load("simulation/approx/approx_type2_4/another/an_code_quad_5004_5.RData")
 an_code_5004_quad <- c(an_code_5004_2, an_code_5004_3, an_code_5004_4, an_code_5004_5)
 for (i in 1:4) {
     temp <- 2 * i
@@ -28,10 +28,10 @@ save(an_code_5004_quad, file = "an_code_5004_quad.RData")
 ```
 
 ```{r, an_code_5007_quad.bs, eval = F, include = F}
-load("simulation/approx/approx_type2_025/another/an_code_quad_5007_2.RData")
-load("simulation/approx/approx_type2_025/another/an_code_quad_5007_3.RData")
-load("simulation/approx/approx_type2_025/another/an_code_quad_5007_4.RData")
-load("simulation/approx/approx_type2_025/another/an_code_quad_5007_5.RData")
+load("simulation/approx/approx_type2_4/another/an_code_quad_5007_2.RData")
+load("simulation/approx/approx_type2_4/another/an_code_quad_5007_3.RData")
+load("simulation/approx/approx_type2_4/another/an_code_quad_5007_4.RData")
+load("simulation/approx/approx_type2_4/another/an_code_quad_5007_5.RData")
 an_code_5007_quad <- c(an_code_5007_2, an_code_5007_3, an_code_5007_4, an_code_5007_5)
 for (i in 1:4) {
     temp <- 2 * i
@@ -111,44 +111,12 @@ m_size <- matrix(NA, nrow = 2, ncol = 4)
 m_code <- matrix(NA, nrow = 2, ncol = 4)
 m_plain <- matrix(NA, nrow = 2, ncol = 4)
 ```
-```{r, steface_5004_trig.bs, eval = F, include = F}
-load("simulation/steface_type2/steface_trig_5004_2.RData")
-load("simulation/steface_type2/steface_trig_5004_3.RData")
-load("simulation/steface_type2/steface_trig_5004_4.RData")
-load("simulation/steface_type2/steface_trig_5004_5.RData")
-steface_5004_trig <- c(steface_5004_2, steface_5004_3, steface_5004_4, steface_5004_5)
-for (i in 1:4) {
-    temp <- 2 * i
-    m_size[1, i] <- (steface_5004_trig[[temp-1]][[1]] + steface_5004_trig[[temp]][[1]])/2
-}
-
-steface_5004_trig <- list(
-    m_size[1, ]
-)
-save(steface_5004_trig, file = "steface_5004_trig.RData")
-```
-```{r, steface_5007_trig.bs, eval = F, include = F}
-load("simulation/steface_type2/steface_trig_5007_2.RData")
-load("simulation/steface_type2/steface_trig_5007_3.RData")
-load("simulation/steface_type2/steface_trig_5007_4.RData")
-load("simulation/steface_type2/steface_trig_5007_5.RData")
-steface_5007_trig <- c(steface_5007_2, steface_5007_3, steface_5007_4, steface_5007_5)
-for (i in 1:4) {
-    temp <- 2 * i
-    m_size[2, i] <- (steface_5007_trig[[temp-1]][[1]] + steface_5007_trig[[temp]][[1]])/2
-}
-
-steface_5007_trig <- list(
-    m_size[2, ]
-)
-save(steface_5007_trig, file = "steface_5007_trig.RData")
-```
 
 ```{r, an_code_5004_trig.bs, eval = F, include = F}
-load("simulation/approx/approx_type2_025/another/an_code_trig_5004_2.RData")
-load("simulation/approx/approx_type2_025/another/an_code_trig_5004_3.RData")
-load("simulation/approx/approx_type2_025/another/an_code_trig_5004_4.RData")
-load("simulation/approx/approx_type2_025/another/an_code_trig_5004_5.RData")
+load("simulation/approx/approx_type2_4/another/an_code_trig_5004_2.RData")
+load("simulation/approx/approx_type2_4/another/an_code_trig_5004_3.RData")
+load("simulation/approx/approx_type2_4/another/an_code_trig_5004_4.RData")
+load("simulation/approx/approx_type2_4/another/an_code_trig_5004_5.RData")
 an_code_5004_trig <- c(an_code_5004_2, an_code_5004_3, an_code_5004_4, an_code_5004_5)
 for (i in 1:4) {
     temp <- 2 * i
@@ -160,11 +128,12 @@ an_code_5004_trig <- list(
 )
 save(an_code_5004_trig, file = "an_code_5004_trig.RData")
 ```
+
 ```{r, an_code_5007_trig.bs, eval = F, include = F}
-load("simulation/approx/approx_type2_025/another/an_code_trig_5007_2.RData")
-load("simulation/approx/approx_type2_025/another/an_code_trig_5007_3.RData")
-load("simulation/approx/approx_type2_025/another/an_code_trig_5007_4.RData")
-load("simulation/approx/approx_type2_025/another/an_code_trig_5007_5.RData")
+load("simulation/approx/approx_type2_4/another/an_code_trig_5007_2.RData")
+load("simulation/approx/approx_type2_4/another/an_code_trig_5007_3.RData")
+load("simulation/approx/approx_type2_4/another/an_code_trig_5007_4.RData")
+load("simulation/approx/approx_type2_4/another/an_code_trig_5007_5.RData")
 an_code_5007_trig <- c(an_code_5007_2, an_code_5007_3, an_code_5007_4, an_code_5007_5)
 for (i in 1:4) {
     temp <- 2 * i
