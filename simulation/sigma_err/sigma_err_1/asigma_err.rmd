@@ -159,25 +159,47 @@ m_mse
 m_sd
 ```
 
-```{r plot}
+```{r plot, fig.height = 2, fig.width= 8}
 
-pdf(file = "err_histogram_1.pdf", height = 4, width = 16)
-par(mfrow = c(1, 4))
-hist(face_1004, col=rgb(1,0,0,0.5),xlim=c(0,1.5), ylim=c(0,8), main=expression(paste(n == 100, ", ", bar(m) == 4)), freq = F, xlab = '', ylab = '')
+pdf(file = "err_histogram_1.pdf", height = 2, width = 8)
+
+op <- par(mfrow = c(1, 4),
+          oma = c(2, 2, 1, 1), # two rows of text at the outer left and bottom margin
+          mar = c(0, 1, 0, 0),
+          mgp = c(1, 1, 0),
+          xpd = NA)
+hist(face_1004, col=rgb(1,0,0,0.5),xlim=c(0,1.5), ylim=c(0,8), main=NA
+, freq = F, xlab = '', ylab = '', axes = FALSE)
+axis(side = 1)
+axis(side = 2, las = 2)
 hist(orig_1004, col=rgb(0,0,1,0.5), add=T, freq = F)
+clip(0, 1.5, 0, 8)
 abline(v = 1, lwd = 3)
 
-hist(face_1007, col=rgb(1,0,0,0.5),xlim=c(0,1.5), ylim=c(0,8), main=expression(paste(n == 100, ", ", bar(m) == 7)), freq = F, xlab = '', ylab = '')
+hist(face_1007, col=rgb(1,0,0,0.5),xlim=c(0,1.5), ylim=c(0,8), main=NA
+, freq = F, xlab = '', ylab = '', axes = FALSE)
+axis(side = 1)
 hist(orig_1007, col=rgb(0,0,1,0.5), add=T, freq = F)
+clip(0, 1.5, 0, 8)
 abline(v = 1, lwd = 3)
 
-hist(face_5004, col=rgb(1,0,0,0.5),xlim=c(0,1.5), ylim=c(0,8), main=expression(paste(n == 500, ", ", bar(m) == 4)), freq = F, xlab = '', ylab = '')
+hist(face_5004, col=rgb(1,0,0,0.5),xlim=c(0,1.5), ylim=c(0,8), main=NA
+, freq = F, xlab = '', ylab = '', axes = FALSE)
+axis(side = 1)
 hist(orig_5004, col=rgb(0,0,1,0.5), add=T, freq = F)
+clip(0, 1.5, 0, 8)
 abline(v = 1, lwd = 3)
 
-hist(face_5007, col=rgb(1,0,0,0.5),xlim=c(0,1.5), ylim=c(0,8), main=expression(paste(n == 500, ", ", bar(m) == 7)), freq = F, xlab = '', ylab = '')
+hist(face_5007, col=rgb(1,0,0,0.5),xlim=c(0,1.5), ylim=c(0,8), main=NA
+, freq = F, xlab = '', ylab = '', axes = FALSE)
+axis(side = 1)
+title(ylab = expression(paste(sigma == 1)),
+      outer = T, line = 1)
 hist(orig_5007, col=rgb(0,0,1,0.5), add=T, freq = F)
+clip(0, 1.5, 0, 8)
 abline(v = 1, lwd = 3)
+
+par(op)
 
 pdf(file = "err_density.pdf", height = 4, width = 16)
 par(mfrow = c(1, 4))

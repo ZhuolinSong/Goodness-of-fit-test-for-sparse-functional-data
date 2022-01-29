@@ -1,0 +1,491 @@
+---
+Title: 'Presentation: type_2 error'
+author: "Charlie Song"
+date: ""
+fig_width: 20 
+fig_height: 5
+---
+
+```{r, include=F}
+par(mfrow = c(1, 4))
+m_size <- matrix(NA, nrow = 2, ncol = 4)
+m_code <- matrix(NA, nrow = 2, ncol = 4)
+m_plain <- matrix(NA, nrow = 2, ncol = 4)
+```
+```{r plot function}
+meta_plot <- function(power_0, v_dev, m_size, m_code, m_plain, t_main, t_ylab, t_xlab, axis_1 = T, axis_2 = F) {
+    plot(v_dev, c(power_0[1], m_size[1, ]),
+        ylim = c(0, 1),
+        type = "l", lty = 2, col = 1, lwd = 2,
+        main = t_main, xlab = t_xlab, ylab = t_ylab, axes = FALSE, xaxt = "n", yaxt = "n")
+
+    title(ylab = expression(paste(sigma == 1)),
+      outer = T, line = 1)
+
+    if (axis_1) {
+        axis(side = 1)}
+    if (axis_2) {axis(side = 2, las = 2)}
+    lines(v_dev, c(power_0[2], m_size[2, ]), ylim = c(0, 1), lty = 1, col = 1, lwd = 2)
+    lines(v_dev, c(power_0[3], m_code[1, ]), ylim = c(0, 1), lty = 2, col = "red", lwd = 2)
+    lines(v_dev, c(power_0[4], m_code[2, ]), ylim = c(0, 1), lty = 1, col = "red", lwd = 2)
+    lines(v_dev, c(power_0[5], m_plain[1, ]), ylim = c(0, 1), lty = 2, col = "blue", lwd = 2)
+    lines(v_dev, c(power_0[6], m_plain[2, ]), ylim = c(0, 1), lty = 1, col = "blue", lwd = 2)
+    # legend("bottomright",
+    #     legend = c("Sparse test(t=80), m = 7", "Sparse test(optimal), m = 7", "Original test, m = 7", "Sparse test(t=80), m = 4", "Sparse test(optimal), m = 4", "Original test, m = 4"),
+    #     col = rep(c("red", "black", "blue"), 2), lty = rep(1:2, each = 3), lwd = rep(2, 6)
+    # )
+    clip(0, 1, 0, 1)
+    abline(h = 1, lty = "dotted", col = "red")
+    abline(h = 0.05, lty = "dotted", col = "red")
+}
+
+```
+```{r, quad_1004, include=F}
+#load("steface_quad_1004.RData") # simulation/approx_type2/
+#for (i in 1:4) {
+#    m_size[1, i] <- steface_quad_1004[[i]][[1]]
+#}
+load("code_quad_1004.RData")
+for (i in 1:4) {
+    m_code[1, i] <- code_quad_1004[[i]][[1]]
+}
+#load("plain_quad_1004.RData")
+#for (i in 1:4) {
+#    m_plain[1, i] <- plain_quad_1004[[i]][[1]]
+#}
+```
+```{r, quad_1007, include=F}
+#load("steface_quad_1007.RData") # simulation/approx_type2/
+#for (i in 1:4) {
+#    m_size[2, i] <- steface_quad_1007[[i]][[1]]
+#}
+load("code_quad_1007.RData")
+for (i in 1:4) {
+    m_code[2, i] <- code_quad_1007[[i]][[1]]
+}
+#load("plain_quad_1007.RData")
+#for (i in 1:4) {
+#    m_plain[2, i] <- plain_quad_1007[[i]][[1]]
+#}
+```
+```{r, summary quad_100}
+print("summary for quad 100")
+m_size
+m_code
+m_plain
+
+m_size_quad100 <- m_size
+m_code_quad100 <- m_code
+m_plain_quad100 <- m_plain
+```
+```{r,  plot quad_100}
+#pdf(file = "new_quad_100.pdf")
+
+v_dev <- seq(0, 1, length.out = 5)
+power_0 <- c(0.0524, 0.0444, 0.0510, 0.0472, 0.1074, 0.0752)
+t_main <- expression(paste(n == 100, ", ", bar(m) == 4))
+t_ylab <- "Power, Quadratic Dev."
+t_xlab <- NA
+meta_plot(power_0, v_dev, m_size_quad100, m_code_quad100, m_plain_quad100, t_main, t_ylab, t_xlab)
+#dev.off()
+```
+
+
+
+```{r, include=F}
+m_size <- matrix(NA, nrow = 2, ncol = 4)
+m_code <- matrix(NA, nrow = 2, ncol = 4)
+m_plain <- matrix(NA, nrow = 2, ncol = 4)
+```
+```{r, trig_1004, include=F}
+#load("steface_trig_1004.RData") # simulation/rmd/
+#for (i in 1:4) {
+#    m_size[1, i] <- steface_trig_1004[[i]][[1]]
+#}
+load("code_trig_1004.RData")
+for (i in 1:4) {
+    m_code[1, i] <- code_trig_1004[[i]][[1]]
+}
+#load("plain_trig_1004.RData")
+#for (i in 1:4) {
+#    m_plain[1, i] <- plain_trig_1004[[i]][[1]]
+#}
+```
+```{r, trig_1007, include=F}
+#load("steface_trig_1007.RData") # simulation/rmd/
+#for (i in 1:4) {
+#    m_size[2, i] <- steface_trig_1007[[i]][[1]]
+#}
+load("code_trig_1007.RData")
+for (i in 1:4) {
+    m_code[2, i] <- code_trig_1007[[i]][[1]]
+}
+#load("plain_trig_1007.RData")
+#for (i in 1:4) {
+#    m_plain[2, i] <- plain_trig_1007[[i]][[1]]
+#}
+```
+```{r, summary trig_100}
+print("summary for steface_trig")
+m_size
+m_code
+m_plain
+
+m_size_trig100 <- m_size
+m_code_trig100 <- m_code
+m_plain_trig100 <- m_plain
+```
+```{r,  plot trig_100}
+# pdf(file = "new_trig_100.pdf")
+
+t_main <- expression(paste(n == 100, ", ", bar(m) == 7))
+t_ylab <- "Power, Trigonometric Dev."
+meta_plot(power_0, v_dev, m_size_trig100, m_code_trig100, m_plain_trig100, t_main, t_ylab, t_xlab)
+
+#dev.off()
+```
+
+
+
+
+```{r, include=F}
+m_size <- matrix(NA, nrow = 2, ncol = 4)
+m_code <- matrix(NA, nrow = 2, ncol = 4)
+m_plain <- matrix(NA, nrow = 2, ncol = 4)
+```
+```{r, steface_5004_quad.bs, eval = F, include = F}
+load("simulation/steface_type2/steface_quad_5004_2.RData")
+load("simulation/steface_type2/steface_quad_5004_3.RData")
+load("simulation/steface_type2/steface_quad_5004_4.RData")
+load("simulation/steface_type2/steface_quad_5004_5.RData")
+steface_5004_quad <- c(steface_5004_2, steface_5004_3, steface_5004_4, steface_5004_5)
+for (i in 1:4) {
+    temp <- 2 * i
+    m_size[1, i] <- (steface_5004_quad[[temp-1]][[1]] + steface_5004_quad[[temp]][[1]])/2
+}
+
+steface_5004_quad <- list(
+    m_size[1, ]
+)
+save(steface_5004_quad, file = "steface_5004_quad.RData")
+```
+```{r, steface_5007_quad.bs, eval = F, include = F}
+load("simulation/steface_type2/steface_quad_5007_2.RData")
+load("simulation/steface_type2/steface_quad_5007_3.RData")
+load("simulation/steface_type2/steface_quad_5007_4.RData")
+load("simulation/steface_type2/steface_quad_5007_5.RData")
+steface_5007_quad <- c(steface_5007_2, steface_5007_3, steface_5007_4, steface_5007_5)
+for (i in 1:4) {
+    temp <- 2 * i
+    m_size[2, i] <- (steface_5007_quad[[temp-1]][[1]] + steface_5007_quad[[temp]][[1]])/2
+}
+
+steface_5007_quad <- list(
+    m_size[2, ]
+)
+save(steface_5007_quad, file = "steface_5007_quad.RData")
+```
+```{r, plain_5004_quad.bs, eval = F, include = F}
+# load("simulation/rmd/plain_quad_5004_2.RData")
+# load("simulation/rmd/plain_quad_5004_3.RData")
+# load("simulation/rmd/plain_quad_5004_4.RData")
+# load("simulation/rmd/plain_quad_5004_5.RData")
+# plain_5004_quad <- c(plain_5004_2, plain_5004_3, plain_5004_4, plain_5004_5)
+# for (i in 1:4) {
+#     temp <- 2 * i
+#     m_size[1, i] <- (plain_5004_quad[[temp-1]][[1]] + plain_5004_quad[[temp]][[1]])/2
+# }
+# 
+# plain_5004_quad <- list(
+#     m_size[1, ]
+# )
+# save(plain_5004_quad, file = "plain_5004_quad.RData")
+```
+```{r, plain_5007_quad.bs, eval = F, include = F}
+# load("simulation/rmd/plain_quad_5007_2.RData")
+# load("simulation/rmd/plain_quad_5007_3.RData")
+# load("simulation/rmd/plain_quad_5007_4.RData")
+# load("simulation/rmd/plain_quad_5007_5.RData")
+# plain_5007_quad <- c(plain_5007_2, plain_5007_3, plain_5007_4, plain_5007_5)
+# for (i in 1:4) {
+#     temp <- 2 * i
+#     m_size[2, i] <- (plain_5007_quad[[temp-1]][[1]] + plain_5007_quad[[temp]][[1]])/2
+# }
+# 
+# plain_5007_quad <- list(
+#     m_size[2, ]
+# )
+# save(plain_5007_quad, file = "plain_5007_quad.RData")
+```
+```{r, code_5004_quad.bs, eval = F, include = F}
+load("simulation/approx/approx_type2_4/code_quad_5004_2.RData")
+load("simulation/approx/approx_type2_4/code_quad_5004_3.RData")
+load("simulation/approx/approx_type2_4/code_quad_5004_4.RData")
+load("simulation/approx/approx_type2_4/code_quad_5004_5.RData")
+code_5004_quad <- c(code_5004_2, code_5004_3, code_5004_4, code_5004_5)
+for (i in 1:4) {
+    temp <- 2 * i
+    m_size[1, i] <- (code_5004_quad[[temp-1]][[1]] + code_5004_quad[[temp]][[1]])/2
+}
+
+code_5004_quad <- list(
+    m_size[1, ]
+)
+save(code_5004_quad, file = "code_5004_quad.RData")
+```
+```{r, code_5007_quad.bs, eval = F, include = F}
+load("simulation/approx/approx_type2_4/code_quad_5007_2.RData")
+load("simulation/approx/approx_type2_4/code_quad_5007_3.RData")
+load("simulation/approx/approx_type2_4/code_quad_5007_4.RData")
+load("simulation/approx/approx_type2_4/code_quad_5007_5.RData")
+code_5007_quad <- c(code_5007_2, code_5007_3, code_5007_4, code_5007_5)
+for (i in 1:4) {
+    temp <- 2 * i
+    m_size[2, i] <- (code_5007_quad[[temp-1]][[1]] + code_5007_quad[[temp]][[1]])/2
+}
+
+code_5007_quad <- list(
+    m_size[2, ]
+)
+save(code_5007_quad, file = "code_5007_quad.RData")
+```
+
+```{r, quad_5004, include=F}
+#load("steface_5004_quad.RData") # simulation/steface_type2/
+#for (i in 1:4) {
+#    m_size[1, i] <- steface_5004_quad[[1]][[i]]
+#}
+load("code_5004_quad.RData")
+for (i in 1:4) {
+    m_code[1, i] <- code_5004_quad[[1]][[i]]
+}
+#load("plain_5004_quad.RData")
+#for (i in 1:4) {
+#    m_plain[1, i] <- plain_5004_quad[[1]][[i]]
+#}
+```
+```{r, quad_5007, include=F}
+#load("steface_5007_quad.RData")
+#for (i in 1:4) {
+#    m_size[2, i] <- steface_5007_quad[[1]][[i]]
+#}
+load("code_5007_quad.RData")
+for (i in 1:4) {
+    m_code[2, i] <- code_5007_quad[[1]][[i]]
+}
+#load("plain_5007_quad.RData")
+#for (i in 1:4) {
+#    m_plain[2, i] <- plain_5007_quad[[1]][[i]]
+#}
+```
+
+```{r, summary quad_500}
+print("summary for quad 500")
+m_size
+m_code
+m_plain
+
+m_size_quad500 <- m_size
+m_code_quad500 <- m_code
+m_plain_quad500 <- m_plain
+```
+```{r,  plot quad_500}
+#pdf(file = "zoom_quad_500.pdf")
+
+v_dev <- seq(0, 0.6, length.out = 5)
+power_0 <- c(0.051, 0.041, 0.055, 0.052, 0.079, 0.065)
+t_main <- expression(paste(n == 500, ", ", bar(m) == 4))
+t_ylab <- "Power, Quadratic Dev."
+meta_plot(power_0, v_dev, m_size_quad500, m_code_quad500, m_plain_quad500, t_main, t_ylab, t_xlab)
+
+#dev.off()
+```
+
+
+
+```{r, include=F}
+m_size <- matrix(NA, nrow = 2, ncol = 4)
+m_code <- matrix(NA, nrow = 2, ncol = 4)
+m_plain <- matrix(NA, nrow = 2, ncol = 4)
+```
+```{r, steface_5004_trig.bs, eval = F, include = F}
+load("simulation/steface_type2/steface_trig_5004_2.RData")
+load("simulation/steface_type2/steface_trig_5004_3.RData")
+load("simulation/steface_type2/steface_trig_5004_4.RData")
+load("simulation/steface_type2/steface_trig_5004_5.RData")
+steface_5004_trig <- c(steface_5004_2, steface_5004_3, steface_5004_4, steface_5004_5)
+for (i in 1:4) {
+    temp <- 2 * i
+    m_size[1, i] <- (steface_5004_trig[[temp-1]][[1]] + steface_5004_trig[[temp]][[1]])/2
+}
+
+steface_5004_trig <- list(
+    m_size[1, ]
+)
+save(steface_5004_trig, file = "steface_5004_trig.RData")
+```
+```{r, steface_5007_trig.bs, eval = F, include = F}
+load("simulation/steface_type2/steface_trig_5007_2.RData")
+load("simulation/steface_type2/steface_trig_5007_3.RData")
+load("simulation/steface_type2/steface_trig_5007_4.RData")
+load("simulation/steface_type2/steface_trig_5007_5.RData")
+steface_5007_trig <- c(steface_5007_2, steface_5007_3, steface_5007_4, steface_5007_5)
+for (i in 1:4) {
+    temp <- 2 * i
+    m_size[2, i] <- (steface_5007_trig[[temp-1]][[1]] + steface_5007_trig[[temp]][[1]])/2
+}
+
+steface_5007_trig <- list(
+    m_size[2, ]
+)
+save(steface_5007_trig, file = "steface_5007_trig.RData")
+```
+```{r, plain_5004_trig.bs, eval = F, include = F}
+load("simulation/rmd/plain_trig_5004_2.RData")
+load("simulation/rmd/plain_trig_5004_3.RData")
+load("simulation/rmd/plain_trig_5004_4.RData")
+load("simulation/rmd/plain_trig_5004_5.RData")
+plain_5004_trig <- c(plain_5004_2, plain_5004_3, plain_5004_4, plain_5004_5)
+for (i in 1:4) {
+    temp <- 2 * i
+    m_size[1, i] <- (plain_5004_trig[[temp-1]][[1]] + plain_5004_trig[[temp]][[1]])/2
+}
+
+plain_5004_trig <- list(
+    m_size[1, ]
+)
+save(plain_5004_trig, file = "plain_5004_trig.RData")
+```
+```{r, plain_5007_trig.bs, eval = F, include = F}
+load("simulation/rmd/plain_trig_5007_2.RData")
+load("simulation/rmd/plain_trig_5007_3.RData")
+load("simulation/rmd/plain_trig_5007_4.RData")
+load("simulation/rmd/plain_trig_5007_5.RData")
+plain_5007_trig <- c(plain_5007_2, plain_5007_3, plain_5007_4, plain_5007_5)
+for (i in 1:4) {
+    temp <- 2 * i
+    m_size[2, i] <- (plain_5007_trig[[temp-1]][[1]] + plain_5007_trig[[temp]][[1]])/2
+}
+
+plain_5007_trig <- list(
+    m_size[2, ]
+)
+save(plain_5007_trig, file = "plain_5007_trig.RData")
+```
+```{r, code_5004_trig.bs, eval = F, include = F}
+load("simulation/approx/approx_type2_4/code_trig_5004_2.RData")
+load("simulation/approx/approx_type2_4/code_trig_5004_3.RData")
+load("simulation/approx/approx_type2_4/code_trig_5004_4.RData")
+load("simulation/approx/approx_type2_4/code_trig_5004_5.RData")
+code_5004_trig <- c(code_5004_2, code_5004_3, code_5004_4, code_5004_5)
+for (i in 1:4) {
+    temp <- 2 * i
+    m_size[1, i] <- (code_5004_trig[[temp-1]][[1]] + code_5004_trig[[temp]][[1]])/2
+}
+
+code_5004_trig <- list(
+    m_size[1, ]
+)
+save(code_5004_trig, file = "code_5004_trig.RData")
+```
+```{r, code_5007_trig.bs, eval = F, include = F}
+load("simulation/approx/approx_type2_4/code_trig_5007_2.RData")
+load("simulation/approx/approx_type2_4/code_trig_5007_3.RData")
+load("simulation/approx/approx_type2_4/code_trig_5007_4.RData")
+load("simulation/approx/approx_type2_4/code_trig_5007_5.RData")
+code_5007_trig <- c(code_5007_2, code_5007_3, code_5007_4, code_5007_5)
+for (i in 1:4) {
+    temp <- 2 * i
+    m_size[2, i] <- (code_5007_trig[[temp-1]][[1]] + code_5007_trig[[temp]][[1]])/2
+}
+
+code_5007_trig <- list(
+    m_size[2, ]
+)
+save(code_5007_trig, file = "code_5007_trig.RData")
+```
+
+
+```{r, trig_5004, include=F}
+#load("steface_5004_trig.RData") # simulation/steface_type2/
+#for (i in 1:4) {
+#    m_size[1, i] <- steface_5004_trig[[1]][[i]]
+#}
+load("code_5004_trig.RData")
+for (i in 1:4) {
+    m_code[1, i] <- code_5004_trig[[1]][[i]]
+}
+#load("plain_5004_trig.RData")
+#for (i in 1:4) {
+#    m_plain[1, i] <- plain_5004_trig[[1]][[i]]
+#}
+```
+```{r, trig_5007, include=F}
+#load("steface_5007_trig.RData") # simulation/rmd/
+#for (i in 1:4) {
+#    m_size[2, i] <- steface_5007_trig[[1]][[i]]
+#}
+load("code_5007_trig.RData")
+for (i in 1:4) {
+    m_code[2, i] <- code_5007_trig[[1]][[i]]
+}
+#load("plain_5007_trig.RData")
+#for (i in 1:4) {
+#    m_plain[2, i] <- plain_5007_trig[[1]][[i]]
+#}
+```
+
+```{r, summary trig_500}
+print("summary for trig 500")
+m_size
+m_code
+m_plain
+
+m_size_trig500 <- m_size
+m_code_trig500 <- m_code
+m_plain_trig500 <- m_plain
+```
+```{r,  plot trig_500}
+#pdf(file = "zoom_trig_500.pdf")
+
+t_main <- expression(paste(n == 500, ", ", bar(m) == 7))
+t_ylab <- "Power, Trigonometric Dev."
+meta_plot(power_0, v_dev, m_size_trig500, m_code_trig500, m_plain_trig500, t_main, t_ylab, t_xlab)
+#dev.off()
+```
+
+
+```{r output, fig.height = 2, fig.width = 8}
+#pdf(file = "type2_1.pdf", height = 2, width = 8)
+op <- par(mfrow = c(1, 4),
+          oma = c(2, 2, 1, 1), # two rows of text at the outer left and bottom margin
+          mar = c(0, 1, 1, 0),
+          mgp = c(3, 0.75, 0),
+          xpd = NA)
+
+v_dev <- seq(0, 1, length.out = 5)
+power_0 <- c(0.0524, 0.0444, 0.0510, 0.0472, 0.1074, 0.0752)
+t_main <- expression(paste(n == 100, ", ", bar(m) == 4))
+t_ylab <- NA
+t_xlab <- NA
+meta_plot(power_0, v_dev, m_size_quad100, m_code_quad100, m_plain_quad100, t_main, t_ylab, t_xlab, axis_2 = T)
+
+t_main <- expression(paste(n == 100, ", ", bar(m) == 7))
+t_ylab <- NA
+meta_plot(power_0, v_dev, m_size_trig100, m_code_trig100, m_plain_trig100, t_main, t_ylab, t_xlab)
+
+v_dev <- seq(0, 0.6, length.out = 5)
+power_0 <- c(0.051, 0.041, 0.055, 0.052, 0.079, 0.065)
+t_main <- expression(paste(n == 500, ", ", bar(m) == 4))
+t_ylab <- NA
+meta_plot(power_0, v_dev, m_size_quad500, m_code_quad500, m_plain_quad500, t_main, t_ylab, t_xlab)
+
+t_main <- expression(paste(n == 500, ", ", bar(m) == 7))
+t_ylab <- NA
+meta_plot(power_0, v_dev, m_size_trig500, m_code_trig500, m_plain_trig500, t_main, t_ylab, t_xlab)
+a <- 1
+title(ylab = expression(paste(sigma == a)),
+      outer = T, line = 1)
+dev.off()
+```
+

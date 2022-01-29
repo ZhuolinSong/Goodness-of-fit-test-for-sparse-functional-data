@@ -27,7 +27,10 @@
 
 devtools::load_all()
 RNGkind("L'Ecuyer-CMRG")
-library(refund)
+library(refund) 
+data(grid)
+data(ADNI)
+data(bone)
 
 # direct test(type 1)
 sim_direct(seed = 2021087, k = 10, n = 100, m = 7, dev = "trigonometric", r = 0,
@@ -329,12 +332,15 @@ str(data)
 length(unique(ADAS_fd$argvals))
 match(data$.index, times)
 count <- NULL
-for (i in seq_len(nrow(ADAS_fd))) {
-
+for (i in seq_len(length(unique(data$.id)))) {
+  subj.idx <- which(ADAS_fd$subj == i)
   subj.count <- length(subj.idx)
   count <- c(count, subj.count)
 }
 mean(count)
+min(count)
+max(count)
+
 
 ### Ftest(optimal)(with m >= 5)
 fit.b1 <- bootstrap.test(data, times, approx = F, i_face = T, truncate.tn = 2)
@@ -449,3 +455,42 @@ fit.b19$Tn
 ### Direct Test(with m >= 5)
 fit.d20 <- direct.test(data, times)
 fit.d20$RLRT # p-value = , RLRT = 
+
+
+## spnbmd
+str(bmd)
+min(bmd["age"])
+max(bmd["age"])
+data <- data.frame(.value = bmd$spnbmd, .index = (bmd$age - 8.8)/(26.2-8.8)*2 - 1, .id = bmd$idnum)
+min(data[".index"])
+max(data[".index"])
+times <- sort(c(round(seq(-1, 1, length.out = 81), digits = 3), unique(data$.index)))
+match(data$.index, times)
+
+count <- NULL
+for (i in seq_len(max(unique(data$.id)))) {
+  subj.idx <- which(data$.id == i)
+  if (length(subj.idx) > 0) {
+    subj.count <- length(subj.idx)
+    count <- c(count, subj.count)
+  }
+}
+mean(count)
+min(count)
+max(count)
+
+### Ftest(optimal)(with m >= 5)
+fit.b21 <- bootstrap.test(data, times, approx = F, i_face = T, truncate.tn = 2)
+fit.b21$p # p-value = 0.977, RLRT = 500.7392
+fit.b21$Tn
+### Ftest(approx)(with m >= 5)
+fit.b22 <- bootstrap.test(data, times, approx = T, i_face = T, truncate.tn = 1)
+fit.b22$p # p-value = 0.99, RLRT = 484.7479
+fit.b22$Tn
+### Original Test(with m >= 5)
+fit.b23 <- bootstrap.test(data, times, approx = T, i_face = F, truncate.tn = 1)
+fit.b23$p # p-value = 0.989, RLRT = 484.7479
+fit.b23$Tn
+### Direct Test(with m >= 5)
+fit.d24 <- direct.test(data, times)
+fit.d24$RLRT # p-value = 0.4311, RLRT = 0.016717
