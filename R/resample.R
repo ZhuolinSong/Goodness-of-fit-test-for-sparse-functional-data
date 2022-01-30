@@ -12,7 +12,7 @@ resample <- function(data, mu, coef.null, sigsq, L = 1) {
   par.random <- sapply(seq_len(L), function(i) {
         s_offset <- (i-1) * nsubj
         sapply(seq_len(nsubj), function(x) {
-            b.mat[s_offset + x, 1] + b.mat[s_offset + x, 2] * subset(data, .id == x)$.index
+            b.mat[s_offset + x, 1] + b.mat[s_offset + x, 2] * subset(data, .id == unique(data$.id)[x])$.index
         })
     })
   if (is.list(par.random)) { # if a list

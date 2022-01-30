@@ -10,12 +10,13 @@ head(content)
 max(content$agedays) #701
 min(content$agedays) #0
 max(content$id)      #304
+length(unique(content$id)) #197
 nrow(content)        #4405
 max(table(content$id)) #41
 min(table(content$id)) #10
 mean(table(content$id)) #22.36041
 
-content$agedays <- (content$agedays - 0) / (701 - 0) * 2 - 1
+content$agedays <- round((content$agedays - 0) / (701 - 0) * 2 - 1, digits = 5)
 
 times <- round(seq(-1, 1, length.out = 702), digits = 5)
 data <- data.frame(.value = content$height, .index = content$agedays, .id = content$id)
@@ -30,7 +31,7 @@ fit.b1$p # p-value = 0.885, Tn = 6.916182
 fit.b1$Tn
 ### Modified
 fit.b2 <- bootstrap.test(data, times, approx = T, i_face = T, truncate.tn = 1)
-fit.b2$p # p-value = 0.146, Tn =  52384.34
+fit.b2$p # p-value = 0.865, Tn =  6.939732
 fit.b2$Tn
 ### Bootstrap
 fit.b3 <- bootstrap.test(data, times, approx = T, i_face = F, truncate.tn = 1)
