@@ -316,11 +316,11 @@ meta_plot(power_0, v_dev, m_size_trig500, m_code_trig500, m_plain_trig500, t_mai
 
 
 ```{r output, fig.height = 5, fig.width = 6}
-pdf(file = "type2_025.pdf", height = 5, width = 6)
+pdf(file = "type2_4.pdf", height = 5, width = 6)
 op <- par(mfrow = c(2, 2),
           oma = c(2, 3, 1, 1), # two rows of text at the outer left and bottom margin
           mar = c(0, 0.5, 0.5, 0),
-          mgp = c(2, 0.5, 0),
+          mgp = c(2, 0.5, -0.35),
           xpd = NA)
 
 v_dev <- sort(c(seq(0, 1, length.out = 5), seq(0.12375, 0.86625, length.out = 4)))
@@ -328,11 +328,11 @@ power_0 <- c(0.054, 0.047, 0.057, 0.047, 0.069, 0.056)
 t_main <- expression(paste("Quadratic Dev"))
 t_ylab <- expression(paste(n == 100))
 t_xlab <- NA
-meta_plot(power_0, v_dev, m_size_quad100, m_code_quad100, m_plain_quad100, t_main, t_ylab, t_xlab, axis_2 = T, axis_1 = F)
+meta_plot(power_0, v_dev, m_size_quad100, m_code_quad100, m_plain_quad100, t_main, t_ylab, t_xlab, axis_2 = T, axis_1 = T)
 
 t_main <- expression(paste("Trigonometric Dev"))
 t_ylab <- NA
-meta_plot(power_0, v_dev, m_size_trig100, m_code_trig100, m_plain_trig100, t_main, t_ylab, t_xlab, axis_1 = F)
+meta_plot(power_0, v_dev, m_size_trig100, m_code_trig100, m_plain_trig100, t_main, t_ylab, t_xlab, axis_1 = T)
 
 v_dev <- sort(c(seq(0, 0.6, length.out = 5), seq(0.075, 0.525, length.out = 4)))
 power_0 <- c(0.054, 0.043, 0.052, 0.043, 0.063, 0.051)

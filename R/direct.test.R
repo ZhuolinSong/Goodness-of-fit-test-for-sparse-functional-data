@@ -44,10 +44,9 @@ direct.test <- function(data, times) {
     return(gam0$fitted.values)
   }
   fit.alt.direct <- function(data, nl, nk) {
-    try(lme(.value ~ 1, random = list(
-      .id = pdIdent(~ .indexsq - 1),
-      .id = pdSymm(~ 1 + .index)
-    ), data = data), silent = TRUE)
+    try(lme(.value ~ 1, random = list(.id = pdIdent(~ .indexsq - 1),
+                                      .id = pdSymm(~ 1 + .index)),
+            data = data, control = lmeControl(opt = "optim")), silent = TRUE)
   }
   fit.null.direct <- function(data, nl, nk) {
     try(lme(.value ~ 1, random = list(.id = pdSymm(~ 1 + .index)), data = data), silent = TRUE)

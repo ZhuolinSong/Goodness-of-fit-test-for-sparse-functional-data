@@ -27,9 +27,9 @@
 #' Apply the bootstrap test for testing a quadratic polynomial covariance
 #'
 #' @param data  "data frame with three arguments:
-#'                  (1) "argvals": observation times;
-#'                  (2) "subj": subject indices;
-#'                  (3) "y": values of observations;
+#'                  (1) ".index": observation times;
+#'                  (2) ".id": subject indices;
+#'                  (3) ".value": values of observations;
 #'  Note that: we only handle complete data, so missing values are not allowed at this moment
 #' @param nbs number of bootstrap samples, default = 1000
 #' @param times  "argvals.new" if we want the estimated covariance function at "argvals.new"; if NULL,

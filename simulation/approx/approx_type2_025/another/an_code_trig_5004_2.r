@@ -5,7 +5,7 @@ RNGkind("L'Ecuyer-CMRG")
 data(grid)
 
 s_seed <- 999983
-s_k <- 3000
+s_k <- 1000
 s_n <- 500
 s_m <- 4
 v_seed <- c(s_seed, s_seed + s_k)
